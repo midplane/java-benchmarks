@@ -16,6 +16,7 @@
         <module>benchmark-sample</module>
         <module>benchmark-random</module>
         <module>benchmark-uuid</module>
+        <module>benchmark-guice</module>
     </modules>
 
     <properties>

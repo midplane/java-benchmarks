@@ -17,6 +17,8 @@
         <module>benchmark-random</module>
         <module>benchmark-uuid</module>
         <module>benchmark-guice</module>
+        <module>benchmark-jackson</module>
+        <module>benchmark-connection-pool</module>
     </modules>
 
     <properties>

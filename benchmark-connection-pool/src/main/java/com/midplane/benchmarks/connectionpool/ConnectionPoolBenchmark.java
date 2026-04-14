@@ -35,26 +35,36 @@ import java.util.concurrent.TimeUnit;
  * - Vibur DBCP: Uses a ConcurrentLinkedDeque with a Semaphore to bound concurrent acquisitions.
  *   Claims a near-lock-free acquisition path.
  *
- * - Tomcat JDBC Pool: Uses a FairBlockingQueue with a fair ReentrantLock. Dropwizard's original
- *   default pool before HikariCP replaced it in v1.3.
+ * - Tomcat JDBC Pool: Uses a FairBlockingQueue (unfair mode used here for best performance)
+ *   with a ReentrantLock. Dropwizard's original default pool before HikariCP replaced it in v1.3.
  *
  * SETUP
  * -----
- * All pools are configured identically:
- *   - Pool size: min=8, max=8 (fully pre-warmed — no connection creation during measurement)
+ * All pools are configured identically for best possible performance:
+ *   - Pool size: parameterized (4 and 8), min=max (fully pre-warmed — no connection creation
+ *     during measurement)
  *   - Database: H2 in-memory (eliminates network variance)
  *   - No connection validation on borrow (measures pure pool acquisition overhead)
  *   - Connection timeout: 5 seconds
+ *   - Tomcat: fairQueue=false (avoids FIFO convoy effect; tests best-case performance)
+ *   - Vibur: testConnectionQuery="" (disables per-borrow isValid() call)
  *
  * Each benchmark method acquires a connection and immediately returns it (close()).
  * This is the most common pattern in a Dropwizard + Hibernate stack where Hibernate
  * acquires and releases a connection per transaction.
  *
+ * POOL SIZE DIMENSION
+ * -------------------
+ * Pool sizes 4 and 8 are benchmarked, producing two saturation points per thread count:
+ *   - pool=4: saturates at 4 threads
+ *   - pool=8: saturates at 8 threads
+ * This reveals how each pool's acquisition algorithm behaves as the pool/thread ratio shifts.
+ *
  * THREAD COUNTS
  * -------------
- * Thread counts: 1, 4, 8, 32, 64. Pool size is fixed at 8, so:
- *   - 1–8 threads:  low-contention regime (threads <= pool size, rarely have to wait)
- *   - 32–64 threads: high-contention regime (threads >> pool size, acquisition blocks)
+ * Thread counts: 1, 4, 8, 32, 64. Combined with pool sizes:
+ *   - threads <= pool size:  low-contention regime (threads rarely have to wait)
+ *   - threads >> pool size:  high-contention regime (acquisition blocks)
  *
  * RUN CONFIGURATION
  * -----------------
@@ -72,7 +82,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Run:
  *   mvn package -pl benchmark-connection-pool
- *   java -jar benchmark-connection-pool/target/benchmarks.jar
+ *   java -jar benchmark-connection-pool/target/benchmarks.jar -rf json -rff benchmark-connection-pool/results.json
  */
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -81,18 +91,18 @@ import java.util.concurrent.TimeUnit;
 @Fork(2)
 public class ConnectionPoolBenchmark {
 
-    private static final String JDBC_URL  = "jdbc:h2:mem:benchmark;DB_CLOSE_DELAY=-1";
-    private static final String DRIVER    = "org.h2.Driver";
-    private static final String USER      = "sa";
-    private static final String PASSWORD  = "";
-    private static final int    POOL_SIZE = 8;
+    private static final String JDBC_URL = "jdbc:h2:mem:benchmark;DB_CLOSE_DELAY=-1";
+    private static final String DRIVER   = "org.h2.Driver";
+    private static final String USER     = "sa";
+    private static final String PASSWORD = "";
 
     // -------------------------------------------------------------------------
-    // Pool states
+    // Pool states — pool size 4
     // -------------------------------------------------------------------------
 
     @State(Scope.Benchmark)
-    public static class HikariState {
+    public static class HikariState4 {
+        static final int SIZE = 4;
         HikariDataSource dataSource;
 
         @Setup(Level.Trial)
@@ -102,58 +112,49 @@ public class ConnectionPoolBenchmark {
             cfg.setUsername(USER);
             cfg.setPassword(PASSWORD);
             cfg.setDriverClassName(DRIVER);
-            cfg.setMinimumIdle(POOL_SIZE);
-            cfg.setMaximumPoolSize(POOL_SIZE);
+            cfg.setMinimumIdle(SIZE);
+            cfg.setMaximumPoolSize(SIZE);
             cfg.setConnectionTimeout(5_000);
             cfg.setIdleTimeout(600_000);
-            // Disable connection test on borrow — measure pool overhead only
             cfg.setConnectionTestQuery(null);
             dataSource = new HikariDataSource(cfg);
         }
 
         @TearDown(Level.Trial)
-        public void teardown() {
-            dataSource.close();
-        }
+        public void teardown() { dataSource.close(); }
     }
 
     @State(Scope.Benchmark)
-    public static class Dbcp2State {
+    public static class Dbcp2State4 {
+        static final int SIZE = 4;
         BasicDataSource dataSource;
 
         @Setup(Level.Trial)
-        public void setup() {
+        public void setup() throws SQLException {
             dataSource = new BasicDataSource();
             dataSource.setUrl(JDBC_URL);
             dataSource.setUsername(USER);
             dataSource.setPassword(PASSWORD);
             dataSource.setDriverClassName(DRIVER);
-            dataSource.setInitialSize(POOL_SIZE);
-            dataSource.setMinIdle(POOL_SIZE);
-            dataSource.setMaxIdle(POOL_SIZE);
-            dataSource.setMaxTotal(POOL_SIZE);
+            dataSource.setInitialSize(SIZE);
+            dataSource.setMinIdle(SIZE);
+            dataSource.setMaxIdle(SIZE);
+            dataSource.setMaxTotal(SIZE);
             dataSource.setMaxWaitMillis(5_000);
-            // Disable validation on borrow
             dataSource.setTestOnBorrow(false);
             dataSource.setTestWhileIdle(false);
-            // Pre-warm: borrow and return all connections to establish physical connections
-            try {
-                Connection[] conns = new Connection[POOL_SIZE];
-                for (int i = 0; i < POOL_SIZE; i++) conns[i] = dataSource.getConnection();
-                for (Connection c : conns) c.close();
-            } catch (SQLException e) {
-                throw new RuntimeException("DBCP2 warm-up failed", e);
-            }
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
+            for (Connection c : conns) c.close();
         }
 
         @TearDown(Level.Trial)
-        public void teardown() throws Exception {
-            dataSource.close();
-        }
+        public void teardown() throws Exception { dataSource.close(); }
     }
 
     @State(Scope.Benchmark)
-    public static class C3p0State {
+    public static class C3p0State4 {
+        static final int SIZE = 4;
         ComboPooledDataSource dataSource;
 
         @Setup(Level.Trial)
@@ -163,28 +164,25 @@ public class ConnectionPoolBenchmark {
             dataSource.setUser(USER);
             dataSource.setPassword(PASSWORD);
             dataSource.setDriverClass(DRIVER);
-            dataSource.setInitialPoolSize(POOL_SIZE);
-            dataSource.setMinPoolSize(POOL_SIZE);
-            dataSource.setMaxPoolSize(POOL_SIZE);
+            dataSource.setInitialPoolSize(SIZE);
+            dataSource.setMinPoolSize(SIZE);
+            dataSource.setMaxPoolSize(SIZE);
             dataSource.setCheckoutTimeout(5_000);
-            // Disable connection testing
             dataSource.setTestConnectionOnCheckout(false);
             dataSource.setTestConnectionOnCheckin(false);
             dataSource.setIdleConnectionTestPeriod(0);
-            // Pre-warm
-            Connection[] conns = new Connection[POOL_SIZE];
-            for (int i = 0; i < POOL_SIZE; i++) conns[i] = dataSource.getConnection();
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
             for (Connection c : conns) c.close();
         }
 
         @TearDown(Level.Trial)
-        public void teardown() {
-            dataSource.close();
-        }
+        public void teardown() { dataSource.close(); }
     }
 
     @State(Scope.Benchmark)
-    public static class ViburState {
+    public static class ViburState4 {
+        static final int SIZE = 4;
         ViburDBCPDataSource dataSource;
 
         @Setup(Level.Trial)
@@ -193,23 +191,22 @@ public class ConnectionPoolBenchmark {
             dataSource.setJdbcUrl(JDBC_URL);
             dataSource.setUsername(USER);
             dataSource.setPassword(PASSWORD);
-            dataSource.setPoolInitialSize(POOL_SIZE);
-            dataSource.setPoolMaxSize(POOL_SIZE);
+            dataSource.setPoolInitialSize(SIZE);
+            dataSource.setPoolMaxSize(SIZE);
             dataSource.setConnectionTimeoutInMs(5_000);
-            // Disable connection validation (connectionIdleLimitInSeconds=-1 disables idle testing)
-            dataSource.setTestConnectionQuery("isValid");
+            // Empty string disables per-borrow isValid() validation
+            dataSource.setTestConnectionQuery("");
             dataSource.setConnectionIdleLimitInSeconds(-1);
             dataSource.start();
         }
 
         @TearDown(Level.Trial)
-        public void teardown() {
-            dataSource.terminate();
-        }
+        public void teardown() { dataSource.terminate(); }
     }
 
     @State(Scope.Benchmark)
-    public static class TomcatState {
+    public static class TomcatState4 {
+        static final int SIZE = 4;
         DataSource dataSource;
 
         @Setup(Level.Trial)
@@ -219,171 +216,421 @@ public class ConnectionPoolBenchmark {
             p.setUsername(USER);
             p.setPassword(PASSWORD);
             p.setDriverClassName(DRIVER);
-            p.setInitialSize(POOL_SIZE);
-            p.setMinIdle(POOL_SIZE);
-            p.setMaxIdle(POOL_SIZE);
-            p.setMaxActive(POOL_SIZE);
+            p.setInitialSize(SIZE);
+            p.setMinIdle(SIZE);
+            p.setMaxIdle(SIZE);
+            p.setMaxActive(SIZE);
             p.setMaxWait(5_000);
-            p.setFairQueue(true);
-            // Disable connection testing
+            // fairQueue=false: avoids FIFO convoy effect; tests best-case performance
+            p.setFairQueue(false);
             p.setTestOnBorrow(false);
             p.setTestWhileIdle(false);
             dataSource = new DataSource(p);
             dataSource.createPool();
-            // Pre-warm
-            Connection[] conns = new Connection[POOL_SIZE];
-            for (int i = 0; i < POOL_SIZE; i++) conns[i] = dataSource.getConnection();
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
             for (Connection c : conns) c.close();
         }
 
         @TearDown(Level.Trial)
-        public void teardown() {
-            dataSource.close();
+        public void teardown() { dataSource.close(); }
+    }
+
+    // -------------------------------------------------------------------------
+    // Pool states — pool size 8
+    // -------------------------------------------------------------------------
+
+    @State(Scope.Benchmark)
+    public static class HikariState8 {
+        static final int SIZE = 8;
+        HikariDataSource dataSource;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            HikariConfig cfg = new HikariConfig();
+            cfg.setJdbcUrl(JDBC_URL);
+            cfg.setUsername(USER);
+            cfg.setPassword(PASSWORD);
+            cfg.setDriverClassName(DRIVER);
+            cfg.setMinimumIdle(SIZE);
+            cfg.setMaximumPoolSize(SIZE);
+            cfg.setConnectionTimeout(5_000);
+            cfg.setIdleTimeout(600_000);
+            cfg.setConnectionTestQuery(null);
+            dataSource = new HikariDataSource(cfg);
         }
+
+        @TearDown(Level.Trial)
+        public void teardown() { dataSource.close(); }
+    }
+
+    @State(Scope.Benchmark)
+    public static class Dbcp2State8 {
+        static final int SIZE = 8;
+        BasicDataSource dataSource;
+
+        @Setup(Level.Trial)
+        public void setup() throws SQLException {
+            dataSource = new BasicDataSource();
+            dataSource.setUrl(JDBC_URL);
+            dataSource.setUsername(USER);
+            dataSource.setPassword(PASSWORD);
+            dataSource.setDriverClassName(DRIVER);
+            dataSource.setInitialSize(SIZE);
+            dataSource.setMinIdle(SIZE);
+            dataSource.setMaxIdle(SIZE);
+            dataSource.setMaxTotal(SIZE);
+            dataSource.setMaxWaitMillis(5_000);
+            dataSource.setTestOnBorrow(false);
+            dataSource.setTestWhileIdle(false);
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
+            for (Connection c : conns) c.close();
+        }
+
+        @TearDown(Level.Trial)
+        public void teardown() throws Exception { dataSource.close(); }
+    }
+
+    @State(Scope.Benchmark)
+    public static class C3p0State8 {
+        static final int SIZE = 8;
+        ComboPooledDataSource dataSource;
+
+        @Setup(Level.Trial)
+        public void setup() throws Exception {
+            dataSource = new ComboPooledDataSource();
+            dataSource.setJdbcUrl(JDBC_URL);
+            dataSource.setUser(USER);
+            dataSource.setPassword(PASSWORD);
+            dataSource.setDriverClass(DRIVER);
+            dataSource.setInitialPoolSize(SIZE);
+            dataSource.setMinPoolSize(SIZE);
+            dataSource.setMaxPoolSize(SIZE);
+            dataSource.setCheckoutTimeout(5_000);
+            dataSource.setTestConnectionOnCheckout(false);
+            dataSource.setTestConnectionOnCheckin(false);
+            dataSource.setIdleConnectionTestPeriod(0);
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
+            for (Connection c : conns) c.close();
+        }
+
+        @TearDown(Level.Trial)
+        public void teardown() { dataSource.close(); }
+    }
+
+    @State(Scope.Benchmark)
+    public static class ViburState8 {
+        static final int SIZE = 8;
+        ViburDBCPDataSource dataSource;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            dataSource = new ViburDBCPDataSource();
+            dataSource.setJdbcUrl(JDBC_URL);
+            dataSource.setUsername(USER);
+            dataSource.setPassword(PASSWORD);
+            dataSource.setPoolInitialSize(SIZE);
+            dataSource.setPoolMaxSize(SIZE);
+            dataSource.setConnectionTimeoutInMs(5_000);
+            // Empty string disables per-borrow isValid() validation
+            dataSource.setTestConnectionQuery("");
+            dataSource.setConnectionIdleLimitInSeconds(-1);
+            dataSource.start();
+        }
+
+        @TearDown(Level.Trial)
+        public void teardown() { dataSource.terminate(); }
+    }
+
+    @State(Scope.Benchmark)
+    public static class TomcatState8 {
+        static final int SIZE = 8;
+        DataSource dataSource;
+
+        @Setup(Level.Trial)
+        public void setup() throws SQLException {
+            PoolProperties p = new PoolProperties();
+            p.setUrl(JDBC_URL);
+            p.setUsername(USER);
+            p.setPassword(PASSWORD);
+            p.setDriverClassName(DRIVER);
+            p.setInitialSize(SIZE);
+            p.setMinIdle(SIZE);
+            p.setMaxIdle(SIZE);
+            p.setMaxActive(SIZE);
+            p.setMaxWait(5_000);
+            // fairQueue=false: avoids FIFO convoy effect; tests best-case performance
+            p.setFairQueue(false);
+            p.setTestOnBorrow(false);
+            p.setTestWhileIdle(false);
+            dataSource = new DataSource(p);
+            dataSource.createPool();
+            Connection[] conns = new Connection[SIZE];
+            for (int i = 0; i < SIZE; i++) conns[i] = dataSource.getConnection();
+            for (Connection c : conns) c.close();
+        }
+
+        @TearDown(Level.Trial)
+        public void teardown() { dataSource.close(); }
     }
 
     // -------------------------------------------------------------------------
-    // 1 thread
+    // Benchmarks — pool size 4
     // -------------------------------------------------------------------------
 
     @Benchmark @Threads(1)
-    public void hikari_1thread(HikariState s, Blackhole bh) throws SQLException {
+    public void p4_hikari_1thread(HikariState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(1)
-    public void dbcp2_1thread(Dbcp2State s, Blackhole bh) throws SQLException {
+    public void p4_dbcp2_1thread(Dbcp2State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(1)
-    public void c3p0_1thread(C3p0State s, Blackhole bh) throws SQLException {
+    public void p4_c3p0_1thread(C3p0State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(1)
-    public void vibur_1thread(ViburState s, Blackhole bh) throws SQLException {
+    public void p4_vibur_1thread(ViburState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(1)
-    public void tomcat_1thread(TomcatState s, Blackhole bh) throws SQLException {
-        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
-    }
-
-    // -------------------------------------------------------------------------
-    // 4 threads
-    // -------------------------------------------------------------------------
-
-    @Benchmark @Threads(4)
-    public void hikari_4threads(HikariState s, Blackhole bh) throws SQLException {
+    public void p4_tomcat_1thread(TomcatState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(4)
-    public void dbcp2_4threads(Dbcp2State s, Blackhole bh) throws SQLException {
+    public void p4_hikari_4threads(HikariState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(4)
-    public void c3p0_4threads(C3p0State s, Blackhole bh) throws SQLException {
+    public void p4_dbcp2_4threads(Dbcp2State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(4)
-    public void vibur_4threads(ViburState s, Blackhole bh) throws SQLException {
+    public void p4_c3p0_4threads(C3p0State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(4)
-    public void tomcat_4threads(TomcatState s, Blackhole bh) throws SQLException {
+    public void p4_vibur_4threads(ViburState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
-    // -------------------------------------------------------------------------
-    // 8 threads  (== pool size: saturation point)
-    // -------------------------------------------------------------------------
-
-    @Benchmark @Threads(8)
-    public void hikari_8threads(HikariState s, Blackhole bh) throws SQLException {
+    @Benchmark @Threads(4)
+    public void p4_tomcat_4threads(TomcatState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(8)
-    public void dbcp2_8threads(Dbcp2State s, Blackhole bh) throws SQLException {
+    public void p4_hikari_8threads(HikariState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(8)
-    public void c3p0_8threads(C3p0State s, Blackhole bh) throws SQLException {
+    public void p4_dbcp2_8threads(Dbcp2State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(8)
-    public void vibur_8threads(ViburState s, Blackhole bh) throws SQLException {
+    public void p4_c3p0_8threads(C3p0State4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(8)
-    public void tomcat_8threads(TomcatState s, Blackhole bh) throws SQLException {
+    public void p4_vibur_8threads(ViburState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p4_tomcat_8threads(TomcatState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(32)
+    public void p4_hikari_32threads(HikariState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(32)
+    public void p4_dbcp2_32threads(Dbcp2State4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(32)
+    public void p4_c3p0_32threads(C3p0State4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(32)
+    public void p4_vibur_32threads(ViburState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(32)
+    public void p4_tomcat_32threads(TomcatState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p4_hikari_64threads(HikariState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p4_dbcp2_64threads(Dbcp2State4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p4_c3p0_64threads(C3p0State4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p4_vibur_64threads(ViburState4 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p4_tomcat_64threads(TomcatState4 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     // -------------------------------------------------------------------------
-    // 32 threads  (4× pool size: heavy contention)
+    // Benchmarks — pool size 8
     // -------------------------------------------------------------------------
 
-    @Benchmark @Threads(32)
-    public void hikari_32threads(HikariState s, Blackhole bh) throws SQLException {
+    @Benchmark @Threads(1)
+    public void p8_hikari_1thread(HikariState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(1)
+    public void p8_dbcp2_1thread(Dbcp2State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(1)
+    public void p8_c3p0_1thread(C3p0State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(1)
+    public void p8_vibur_1thread(ViburState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(1)
+    public void p8_tomcat_1thread(TomcatState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(4)
+    public void p8_hikari_4threads(HikariState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(4)
+    public void p8_dbcp2_4threads(Dbcp2State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(4)
+    public void p8_c3p0_4threads(C3p0State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(4)
+    public void p8_vibur_4threads(ViburState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(4)
+    public void p8_tomcat_4threads(TomcatState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p8_hikari_8threads(HikariState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p8_dbcp2_8threads(Dbcp2State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p8_c3p0_8threads(C3p0State8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p8_vibur_8threads(ViburState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(8)
+    public void p8_tomcat_8threads(TomcatState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(32)
-    public void dbcp2_32threads(Dbcp2State s, Blackhole bh) throws SQLException {
+    public void p8_hikari_32threads(HikariState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(32)
-    public void c3p0_32threads(C3p0State s, Blackhole bh) throws SQLException {
+    public void p8_dbcp2_32threads(Dbcp2State8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(32)
-    public void vibur_32threads(ViburState s, Blackhole bh) throws SQLException {
+    public void p8_c3p0_32threads(C3p0State8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(32)
-    public void tomcat_32threads(TomcatState s, Blackhole bh) throws SQLException {
+    public void p8_vibur_32threads(ViburState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
-    // -------------------------------------------------------------------------
-    // 64 threads  (8× pool size: extreme contention)
-    // -------------------------------------------------------------------------
-
-    @Benchmark @Threads(64)
-    public void hikari_64threads(HikariState s, Blackhole bh) throws SQLException {
+    @Benchmark @Threads(32)
+    public void p8_tomcat_32threads(TomcatState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(64)
-    public void dbcp2_64threads(Dbcp2State s, Blackhole bh) throws SQLException {
+    public void p8_hikari_64threads(HikariState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(64)
-    public void c3p0_64threads(C3p0State s, Blackhole bh) throws SQLException {
+    public void p8_dbcp2_64threads(Dbcp2State8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(64)
-    public void vibur_64threads(ViburState s, Blackhole bh) throws SQLException {
+    public void p8_c3p0_64threads(C3p0State8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 
     @Benchmark @Threads(64)
-    public void tomcat_64threads(TomcatState s, Blackhole bh) throws SQLException {
+    public void p8_vibur_64threads(ViburState8 s, Blackhole bh) throws SQLException {
+        try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
+    }
+
+    @Benchmark @Threads(64)
+    public void p8_tomcat_64threads(TomcatState8 s, Blackhole bh) throws SQLException {
         try (Connection c = s.dataSource.getConnection()) { bh.consume(c); }
     }
 }

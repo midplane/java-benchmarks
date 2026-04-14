@@ -1,0 +1,2904 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_c3p0_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 96.6322288712008,
+            "scoreError" : 12.337092269540987,
+            "scoreConfidence" : [
+                84.2951366016598,
+                108.96932114074178
+            ],
+            "scorePercentiles" : {
+                "0.0" : 80.48449419800335,
+                "50.0" : 97.61048862996259,
+                "90.0" : 108.30822337432878,
+                "95.0" : 108.55532875148387,
+                "99.0" : 108.55532875148387,
+                "99.9" : 108.55532875148387,
+                "99.99" : 108.55532875148387,
+                "99.999" : 108.55532875148387,
+                "99.9999" : 108.55532875148387,
+                "100.0" : 108.55532875148387
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    99.5923151597076,
+                    95.62866210021757,
+                    93.58012679437533,
+                    100.49848010034606,
+                    108.55532875148387
+                ],
+                [
+                    90.70928390496249,
+                    106.08427497993294,
+                    99.8246396415873,
+                    91.36468308139146,
+                    80.48449419800335
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_c3p0_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 88.42265770495388,
+            "scoreError" : 20.385586534351816,
+            "scoreConfidence" : [
+                68.03707117060206,
+                108.8082442393057
+            ],
+            "scorePercentiles" : {
+                "0.0" : 78.00530443908431,
+                "50.0" : 83.94174518172225,
+                "90.0" : 121.09614949653135,
+                "95.0" : 124.09661286267517,
+                "99.0" : 124.09661286267517,
+                "99.9" : 124.09661286267517,
+                "99.99" : 124.09661286267517,
+                "99.999" : 124.09661286267517,
+                "99.9999" : 124.09661286267517,
+                "100.0" : 124.09661286267517
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    94.09197920123685,
+                    78.05356838393168,
+                    78.00530443908431,
+                    124.09661286267517,
+                    90.58309667518576
+                ],
+                [
+                    83.72603977293221,
+                    86.03983553805766,
+                    84.1574505905123,
+                    82.38909990675201,
+                    83.0835896791708
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_c3p0_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 116.3836136641917,
+            "scoreError" : 20.92663689475503,
+            "scoreConfidence" : [
+                95.45697676943666,
+                137.31025055894673
+            ],
+            "scorePercentiles" : {
+                "0.0" : 88.9708389967268,
+                "50.0" : 117.8401861034204,
+                "90.0" : 135.43971867970188,
+                "95.0" : 136.14907487638877,
+                "99.0" : 136.14907487638877,
+                "99.9" : 136.14907487638877,
+                "99.99" : 136.14907487638877,
+                "99.999" : 136.14907487638877,
+                "99.9999" : 136.14907487638877,
+                "100.0" : 136.14907487638877
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    127.05784773262249,
+                    129.05551290951993,
+                    112.47407267744975,
+                    136.14907487638877,
+                    88.9708389967268
+                ],
+                [
+                    106.5695094177751,
+                    118.38364434756603,
+                    104.47122435537628,
+                    123.40768346921709,
+                    117.29672785927477
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_c3p0_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 95.11586799494451,
+            "scoreError" : 19.061542256331297,
+            "scoreConfidence" : [
+                76.05432573861322,
+                114.1774102512758
+            ],
+            "scorePercentiles" : {
+                "0.0" : 76.97514509436662,
+                "50.0" : 94.58668586222555,
+                "90.0" : 114.17092726715724,
+                "95.0" : 114.84116574094693,
+                "99.0" : 114.84116574094693,
+                "99.9" : 114.84116574094693,
+                "99.99" : 114.84116574094693,
+                "99.999" : 114.84116574094693,
+                "99.9999" : 114.84116574094693,
+                "100.0" : 114.84116574094693
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    94.4148301288902,
+                    104.73262196028425,
+                    114.84116574094693,
+                    102.4064759335229,
+                    108.13878100305001
+                ],
+                [
+                    94.75854159556089,
+                    88.32769869319232,
+                    89.21738274249742,
+                    76.97514509436662,
+                    77.34603705713344
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_c3p0_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 103.71725691421167,
+            "scoreError" : 30.26995104674632,
+            "scoreConfidence" : [
+                73.44730586746536,
+                133.987207960958
+            ],
+            "scorePercentiles" : {
+                "0.0" : 78.37634272541908,
+                "50.0" : 99.2453666817238,
+                "90.0" : 135.82494869763462,
+                "95.0" : 137.26486155749296,
+                "99.0" : 137.26486155749296,
+                "99.9" : 137.26486155749296,
+                "99.99" : 137.26486155749296,
+                "99.999" : 137.26486155749296,
+                "99.9999" : 137.26486155749296,
+                "100.0" : 137.26486155749296
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    120.64908713137758,
+                    101.18284894496564,
+                    137.26486155749296,
+                    122.86573295890946,
+                    88.83920329245412
+                ],
+                [
+                    80.25369721876869,
+                    78.37634272541908,
+                    118.68804341908728,
+                    97.30788441848195,
+                    91.74486747515999
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_dbcp2_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1565.4475587707789,
+            "scoreError" : 31.17347057911793,
+            "scoreConfidence" : [
+                1534.274088191661,
+                1596.6210293498968
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1521.9762786010735,
+                "50.0" : 1568.8708548743225,
+                "90.0" : 1586.4243618885462,
+                "95.0" : 1586.6460425405282,
+                "99.0" : 1586.6460425405282,
+                "99.9" : 1586.6460425405282,
+                "99.99" : 1586.6460425405282,
+                "99.999" : 1586.6460425405282,
+                "99.9999" : 1586.6460425405282,
+                "100.0" : 1586.6460425405282
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1584.429236020707,
+                    1586.6460425405282,
+                    1582.7976165939322,
+                    1580.0014568055547,
+                    1578.0787056202525
+                ],
+                [
+                    1521.9762786010735,
+                    1553.523762179268,
+                    1552.682708523918,
+                    1554.6767766941607,
+                    1559.6630041283925
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_dbcp2_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 225.60722128098809,
+            "scoreError" : 34.44479204721769,
+            "scoreConfidence" : [
+                191.1624292337704,
+                260.05201332820576
+            ],
+            "scorePercentiles" : {
+                "0.0" : 205.54122698216446,
+                "50.0" : 216.13443586080538,
+                "90.0" : 274.2471428088774,
+                "95.0" : 277.35968666183294,
+                "99.0" : 277.35968666183294,
+                "99.9" : 277.35968666183294,
+                "99.99" : 277.35968666183294,
+                "99.999" : 277.35968666183294,
+                "99.9999" : 277.35968666183294,
+                "100.0" : 277.35968666183294
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    246.23424813227743,
+                    205.54122698216446,
+                    220.8678885311101,
+                    277.35968666183294,
+                    209.4180904418397
+                ],
+                [
+                    241.93929128360827,
+                    219.1906765111551,
+                    212.18446873428562,
+                    210.25844032115157,
+                    213.07819521045568
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_dbcp2_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1347.9419700857445,
+            "scoreError" : 142.80383337983943,
+            "scoreConfidence" : [
+                1205.138136705905,
+                1490.745803465584
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1166.3046824670917,
+                "50.0" : 1379.6108426446795,
+                "90.0" : 1472.7231306975505,
+                "95.0" : 1475.970300539941,
+                "99.0" : 1475.970300539941,
+                "99.9" : 1475.970300539941,
+                "99.99" : 1475.970300539941,
+                "99.999" : 1475.970300539941,
+                "99.9999" : 1475.970300539941,
+                "100.0" : 1475.970300539941
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1309.454320426424,
+                    1235.314798920589,
+                    1391.0833683224935,
+                    1306.3009420598587,
+                    1374.5817649353346
+                ],
+                [
+                    1475.970300539941,
+                    1384.639920354024,
+                    1166.3046824670917,
+                    1392.271000715652,
+                    1443.4986021160362
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_dbcp2_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 146.63585426708352,
+            "scoreError" : 33.84778515240256,
+            "scoreConfidence" : [
+                112.78806911468095,
+                180.48363941948608
+            ],
+            "scorePercentiles" : {
+                "0.0" : 118.35180086808775,
+                "50.0" : 149.2941401756396,
+                "90.0" : 177.43109962930262,
+                "95.0" : 177.94519294710634,
+                "99.0" : 177.94519294710634,
+                "99.9" : 177.94519294710634,
+                "99.99" : 177.94519294710634,
+                "99.999" : 177.94519294710634,
+                "99.9999" : 177.94519294710634,
+                "100.0" : 177.94519294710634
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    118.35180086808775,
+                    120.28165775869664,
+                    138.8198330777287,
+                    129.3434710713664,
+                    126.73775907271221
+                ],
+                [
+                    160.2918785675311,
+                    159.7684472735505,
+                    162.01424226498614,
+                    177.94519294710634,
+                    172.8042597690693
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_dbcp2_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 626.3479297067679,
+            "scoreError" : 79.71993422295128,
+            "scoreConfidence" : [
+                546.6279954838167,
+                706.0678639297191
+            ],
+            "scorePercentiles" : {
+                "0.0" : 542.9938194196911,
+                "50.0" : 637.4663717441833,
+                "90.0" : 709.361536234108,
+                "95.0" : 714.3775012618989,
+                "99.0" : 714.3775012618989,
+                "99.9" : 714.3775012618989,
+                "99.99" : 714.3775012618989,
+                "99.999" : 714.3775012618989,
+                "99.9999" : 714.3775012618989,
+                "100.0" : 714.3775012618989
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    664.2178509839895,
+                    648.5981160463988,
+                    608.6555097246763,
+                    603.1775003781614,
+                    548.5328331950698
+                ],
+                [
+                    648.8169398652293,
+                    657.7745987505963,
+                    714.3775012618989,
+                    626.3346274419678,
+                    542.9938194196911
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_hikari_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7823.03255982381,
+            "scoreError" : 277.67916036001355,
+            "scoreConfidence" : [
+                7545.353399463796,
+                8100.711720183823
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7579.786495515124,
+                "50.0" : 7734.276617299762,
+                "90.0" : 8087.731681628623,
+                "95.0" : 8088.804418043239,
+                "99.0" : 8088.804418043239,
+                "99.9" : 8088.804418043239,
+                "99.99" : 8088.804418043239,
+                "99.999" : 8088.804418043239,
+                "99.9999" : 8088.804418043239,
+                "100.0" : 8088.804418043239
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    7722.773313332903,
+                    7795.258103619426,
+                    7740.669180292787,
+                    7715.712493259726,
+                    7715.433768239736
+                ],
+                [
+                    8078.077053897077,
+                    8088.804418043239,
+                    7579.786495515124,
+                    8065.92671773135,
+                    7727.884054306735
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_hikari_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1309.319616957349,
+            "scoreError" : 503.21045553892395,
+            "scoreConfidence" : [
+                806.109161418425,
+                1812.5300724962729
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1023.4569930433466,
+                "50.0" : 1203.0631217632508,
+                "90.0" : 2125.093291697547,
+                "95.0" : 2201.814657939351,
+                "99.0" : 2201.814657939351,
+                "99.9" : 2201.814657939351,
+                "99.99" : 2201.814657939351,
+                "99.999" : 2201.814657939351,
+                "99.9999" : 2201.814657939351,
+                "100.0" : 2201.814657939351
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1219.497459594156,
+                    1169.4754541096102,
+                    1287.3691120248368,
+                    2201.814657939351,
+                    1023.4569930433466
+                ],
+                [
+                    1186.6287839323456,
+                    1292.6931530189356,
+                    1434.60099552131,
+                    1166.4701481199816,
+                    1111.1894122696158
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_hikari_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 28275.1276298055,
+            "scoreError" : 554.7186914417861,
+            "scoreConfidence" : [
+                27720.408938363715,
+                28829.84632124729
+            ],
+            "scorePercentiles" : {
+                "0.0" : 27771.117627551495,
+                "50.0" : 28218.878850281297,
+                "90.0" : 28945.493519937907,
+                "95.0" : 28978.8866917442,
+                "99.0" : 28978.8866917442,
+                "99.9" : 28978.8866917442,
+                "99.99" : 28978.8866917442,
+                "99.999" : 28978.8866917442,
+                "99.9999" : 28978.8866917442,
+                "100.0" : 28978.8866917442
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    27771.117627551495,
+                    28046.263933329104,
+                    27947.989729439705,
+                    28260.407995194226,
+                    28042.106774722044
+                ],
+                [
+                    28644.95497368129,
+                    28594.36071961529,
+                    28287.8381474093,
+                    28177.34970536837,
+                    28978.8866917442
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_hikari_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1049.4249984151688,
+            "scoreError" : 141.24100036130594,
+            "scoreConfidence" : [
+                908.1839980538629,
+                1190.6659987764747
+            ],
+            "scorePercentiles" : {
+                "0.0" : 927.6778074406479,
+                "50.0" : 1033.7237493781286,
+                "90.0" : 1204.7387041603968,
+                "95.0" : 1209.7370561952637,
+                "99.0" : 1209.7370561952637,
+                "99.9" : 1209.7370561952637,
+                "99.99" : 1209.7370561952637,
+                "99.999" : 1209.7370561952637,
+                "99.9999" : 1209.7370561952637,
+                "100.0" : 1209.7370561952637
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1209.7370561952637,
+                    965.2691500870002,
+                    1049.4640518935134,
+                    1100.7906381552446,
+                    927.6778074406479
+                ],
+                [
+                    1112.3763841427372,
+                    987.4723091928125,
+                    1017.9834468627434,
+                    963.7256043351287,
+                    1159.7535358465952
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_hikari_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1424.257974613261,
+            "scoreError" : 671.7718959781731,
+            "scoreConfidence" : [
+                752.4860786350879,
+                2096.0298705914342
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1023.8265811548234,
+                "50.0" : 1246.198233722976,
+                "90.0" : 2292.0838749534882,
+                "95.0" : 2323.0701494622904,
+                "99.0" : 2323.0701494622904,
+                "99.9" : 2323.0701494622904,
+                "99.99" : 2323.0701494622904,
+                "99.999" : 2323.0701494622904,
+                "99.9999" : 2323.0701494622904,
+                "100.0" : 2323.0701494622904
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1023.8265811548234,
+                    2013.2074043742678,
+                    1053.8606646992105,
+                    1227.9032926690843,
+                    1264.4931747768678
+                ],
+                [
+                    1176.2220062140975,
+                    1738.2437336416833,
+                    2323.0701494622904,
+                    1279.3962953168666,
+                    1142.3564438234166
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_tomcat_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 3323.8738466801055,
+            "scoreError" : 49.98246056660708,
+            "scoreConfidence" : [
+                3273.8913861134984,
+                3373.8563072467127
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3236.95143112466,
+                "50.0" : 3328.689913986793,
+                "90.0" : 3351.7591417068443,
+                "95.0" : 3351.8676471434296,
+                "99.0" : 3351.8676471434296,
+                "99.9" : 3351.8676471434296,
+                "99.99" : 3351.8676471434296,
+                "99.999" : 3351.8676471434296,
+                "99.9999" : 3351.8676471434296,
+                "100.0" : 3351.8676471434296
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    3316.855113977952,
+                    3327.0664107595653,
+                    3340.3168109341464,
+                    3330.3134172140203,
+                    3343.373208574778
+                ],
+                [
+                    3321.212058093257,
+                    3236.95143112466,
+                    3350.782592777575,
+                    3319.9997762016737,
+                    3351.8676471434296
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_tomcat_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 883.4212781503007,
+            "scoreError" : 109.62240041669804,
+            "scoreConfidence" : [
+                773.7988777336027,
+                993.0436785669988
+            ],
+            "scorePercentiles" : {
+                "0.0" : 766.6432903324053,
+                "50.0" : 887.9493255836685,
+                "90.0" : 978.1471223696881,
+                "95.0" : 979.3379891233174,
+                "99.0" : 979.3379891233174,
+                "99.9" : 979.3379891233174,
+                "99.99" : 979.3379891233174,
+                "99.999" : 979.3379891233174,
+                "99.9999" : 979.3379891233174,
+                "100.0" : 979.3379891233174
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    905.6493111488262,
+                    911.4998350857754,
+                    967.4293215870241,
+                    766.6432903324053,
+                    806.2754444690078
+                ],
+                [
+                    954.0467790244198,
+                    979.3379891233174,
+                    854.3140974443331,
+                    870.2493400185107,
+                    818.7673732693872
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_tomcat_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 2224.0851871491595,
+            "scoreError" : 159.1542418617435,
+            "scoreConfidence" : [
+                2064.930945287416,
+                2383.239429010903
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2098.6611138515545,
+                "50.0" : 2198.884927100106,
+                "90.0" : 2408.9084151274205,
+                "95.0" : 2415.884050274207,
+                "99.0" : 2415.884050274207,
+                "99.9" : 2415.884050274207,
+                "99.99" : 2415.884050274207,
+                "99.999" : 2415.884050274207,
+                "99.9999" : 2415.884050274207,
+                "100.0" : 2415.884050274207
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    2184.1624788367412,
+                    2346.127698806345,
+                    2108.0239474920845,
+                    2138.622516924938,
+                    2236.0537646015373
+                ],
+                [
+                    2189.439166439746,
+                    2098.6611138515545,
+                    2208.330687760466,
+                    2315.546446503975,
+                    2415.884050274207
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_tomcat_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 445.9176616491303,
+            "scoreError" : 107.0046622095726,
+            "scoreConfidence" : [
+                338.9129994395577,
+                552.922323858703
+            ],
+            "scorePercentiles" : {
+                "0.0" : 323.71692318161956,
+                "50.0" : 439.1285244395238,
+                "90.0" : 547.0219042943493,
+                "95.0" : 547.0240184118686,
+                "99.0" : 547.0240184118686,
+                "99.9" : 547.0240184118686,
+                "99.99" : 547.0240184118686,
+                "99.999" : 547.0240184118686,
+                "99.9999" : 547.0240184118686,
+                "100.0" : 547.0240184118686
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    496.7875210765242,
+                    323.71692318161956,
+                    368.09476567107174,
+                    447.9018491486714,
+                    547.0028772366757
+                ],
+                [
+                    441.1260174346147,
+                    432.39394161468766,
+                    437.1310314444329,
+                    547.0240184118686,
+                    417.9976712711366
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_tomcat_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1528.6784476900334,
+            "scoreError" : 374.54072271773464,
+            "scoreConfidence" : [
+                1154.1377249722987,
+                1903.2191704077682
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1146.8718596489834,
+                "50.0" : 1552.3244467834838,
+                "90.0" : 1854.602897724164,
+                "95.0" : 1863.9428149701648,
+                "99.0" : 1863.9428149701648,
+                "99.9" : 1863.9428149701648,
+                "99.99" : 1863.9428149701648,
+                "99.999" : 1863.9428149701648,
+                "99.9999" : 1863.9428149701648,
+                "100.0" : 1863.9428149701648
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1146.8718596489834,
+                    1446.6931706606472,
+                    1217.1449990805495,
+                    1680.9899651041064,
+                    1389.5694924117397
+                ],
+                [
+                    1863.9428149701648,
+                    1368.0037377870574,
+                    1657.9557229063203,
+                    1770.5436425101568,
+                    1745.0690718206067
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_vibur_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 4415.522901916063,
+            "scoreError" : 92.609429862882,
+            "scoreConfidence" : [
+                4322.913472053181,
+                4508.132331778946
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4336.976767026584,
+                "50.0" : 4394.884684115581,
+                "90.0" : 4507.5077428252025,
+                "95.0" : 4507.55003371454,
+                "99.0" : 4507.55003371454,
+                "99.9" : 4507.55003371454,
+                "99.99" : 4507.55003371454,
+                "99.999" : 4507.55003371454,
+                "99.9999" : 4507.55003371454,
+                "100.0" : 4507.55003371454
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    4399.374326302279,
+                    4373.847873572046,
+                    4353.270945639163,
+                    4336.976767026584,
+                    4390.395041928882
+                ],
+                [
+                    4470.882511425058,
+                    4430.870240590797,
+                    4507.1271248211615,
+                    4507.55003371454,
+                    4384.934154140114
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_vibur_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 22.719006860020574,
+            "scoreError" : 3.12394407046296,
+            "scoreConfidence" : [
+                19.595062789557613,
+                25.842950930483536
+            ],
+            "scorePercentiles" : {
+                "0.0" : 20.23571163959207,
+                "50.0" : 22.706547052628693,
+                "90.0" : 26.124598243119767,
+                "95.0" : 26.20411648625064,
+                "99.0" : 26.20411648625064,
+                "99.9" : 26.20411648625064,
+                "99.99" : 26.20411648625064,
+                "99.999" : 26.20411648625064,
+                "99.9999" : 26.20411648625064,
+                "100.0" : 26.20411648625064
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    21.04169345462386,
+                    22.011318628149994,
+                    26.20411648625064,
+                    23.41989906492704,
+                    25.408934054941916
+                ],
+                [
+                    23.401775477107392,
+                    20.693985061796234,
+                    23.849881612998836,
+                    20.23571163959207,
+                    20.922753119817735
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_vibur_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1470.094515595931,
+            "scoreError" : 417.9037615061538,
+            "scoreConfidence" : [
+                1052.190754089777,
+                1887.9982771020848
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1078.817155204002,
+                "50.0" : 1524.316558985656,
+                "90.0" : 1783.5569103461596,
+                "95.0" : 1783.7866699211536,
+                "99.0" : 1783.7866699211536,
+                "99.9" : 1783.7866699211536,
+                "99.99" : 1783.7866699211536,
+                "99.999" : 1783.7866699211536,
+                "99.9999" : 1783.7866699211536,
+                "100.0" : 1783.7866699211536
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1141.4201816907764,
+                    1205.5115385106146,
+                    1265.4780238494222,
+                    1470.1452461753802,
+                    1781.4890741712147
+                ],
+                [
+                    1741.2016728758717,
+                    1783.7866699211536,
+                    1654.6077217649395,
+                    1578.4878717959318,
+                    1078.817155204002
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_vibur_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 21.119917582103415,
+            "scoreError" : 1.9268162539763194,
+            "scoreConfidence" : [
+                19.193101328127096,
+                23.046733836079735
+            ],
+            "scorePercentiles" : {
+                "0.0" : 19.580687826884656,
+                "50.0" : 20.94954010199465,
+                "90.0" : 23.245583238145365,
+                "95.0" : 23.277504918374415,
+                "99.0" : 23.277504918374415,
+                "99.9" : 23.277504918374415,
+                "99.99" : 23.277504918374415,
+                "99.999" : 23.277504918374415,
+                "99.9999" : 23.277504918374415,
+                "100.0" : 23.277504918374415
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    19.65166130875743,
+                    23.277504918374415,
+                    20.81765335955326,
+                    21.081426844436038,
+                    22.958288116083924
+                ],
+                [
+                    19.98716078316383,
+                    21.49945223152357,
+                    21.688938834463414,
+                    19.580687826884656,
+                    20.656401597793604
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p4_vibur_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 25.574110781624142,
+            "scoreError" : 4.520498794247407,
+            "scoreConfidence" : [
+                21.053611987376733,
+                30.09460957587155
+            ],
+            "scorePercentiles" : {
+                "0.0" : 22.051551466760497,
+                "50.0" : 25.761186692623042,
+                "90.0" : 30.115033377054544,
+                "95.0" : 30.148585899532826,
+                "99.0" : 30.148585899532826,
+                "99.9" : 30.148585899532826,
+                "99.99" : 30.148585899532826,
+                "99.999" : 30.148585899532826,
+                "99.9999" : 30.148585899532826,
+                "100.0" : 30.148585899532826
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    22.051551466760497,
+                    24.028798575786347,
+                    25.136011111916023,
+                    26.774007906226032,
+                    30.148585899532826
+                ],
+                [
+                    26.96771629117382,
+                    22.170435376847106,
+                    22.26457823991868,
+                    26.386362273330064,
+                    29.813060674750023
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_c3p0_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 243.67753124817864,
+            "scoreError" : 19.398147118945808,
+            "scoreConfidence" : [
+                224.27938412923282,
+                263.07567836712445
+            ],
+            "scorePercentiles" : {
+                "0.0" : 224.41770133447994,
+                "50.0" : 247.10632849130877,
+                "90.0" : 259.5840363367619,
+                "95.0" : 259.6473891902461,
+                "99.0" : 259.6473891902461,
+                "99.9" : 259.6473891902461,
+                "99.99" : 259.6473891902461,
+                "99.999" : 259.6473891902461,
+                "99.9999" : 259.6473891902461,
+                "100.0" : 259.6473891902461
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    251.70170568610703,
+                    259.6473891902461,
+                    232.19233892666367,
+                    252.8197964866679,
+                    248.98649647277463
+                ],
+                [
+                    245.22616050984294,
+                    229.41290617764184,
+                    224.41770133447994,
+                    233.35695704195803,
+                    259.0138606554044
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_c3p0_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 209.50871768554111,
+            "scoreError" : 60.362715473613626,
+            "scoreConfidence" : [
+                149.14600221192748,
+                269.8714331591547
+            ],
+            "scorePercentiles" : {
+                "0.0" : 169.55097408330712,
+                "50.0" : 198.90143355563902,
+                "90.0" : 292.34463162962334,
+                "95.0" : 296.5809494132105,
+                "99.0" : 296.5809494132105,
+                "99.9" : 296.5809494132105,
+                "99.99" : 296.5809494132105,
+                "99.999" : 296.5809494132105,
+                "99.9999" : 296.5809494132105,
+                "100.0" : 296.5809494132105
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    296.5809494132105,
+                    179.80503620739245,
+                    204.5172266512083,
+                    175.50586158755073,
+                    193.28564046006974
+                ],
+                [
+                    254.21777157733916,
+                    219.40082880972113,
+                    183.72855757867498,
+                    169.55097408330712,
+                    218.49433048693695
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_c3p0_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 321.00180657757625,
+            "scoreError" : 22.13903372348214,
+            "scoreConfidence" : [
+                298.8627728540941,
+                343.1408403010584
+            ],
+            "scorePercentiles" : {
+                "0.0" : 301.52083014607274,
+                "50.0" : 320.2944433542596,
+                "90.0" : 345.25820735470086,
+                "95.0" : 345.8307088158167,
+                "99.0" : 345.8307088158167,
+                "99.9" : 345.8307088158167,
+                "99.99" : 345.8307088158167,
+                "99.999" : 345.8307088158167,
+                "99.9999" : 345.8307088158167,
+                "100.0" : 345.8307088158167
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    327.0366997566385,
+                    326.9481831349295,
+                    324.0832959928175,
+                    340.10569420465833,
+                    345.8307088158167
+                ],
+                [
+                    303.8493500000436,
+                    301.52083014607274,
+                    314.6842938027221,
+                    309.4534192063618,
+                    316.5055907157017
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_c3p0_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 245.61764611141834,
+            "scoreError" : 60.1455208359097,
+            "scoreConfidence" : [
+                185.47212527550863,
+                305.76316694732805
+            ],
+            "scorePercentiles" : {
+                "0.0" : 185.87293612568672,
+                "50.0" : 268.761619696357,
+                "90.0" : 282.45109838201404,
+                "95.0" : 283.0851272825162,
+                "99.0" : 283.0851272825162,
+                "99.9" : 283.0851272825162,
+                "99.99" : 283.0851272825162,
+                "99.999" : 283.0851272825162,
+                "99.9999" : 283.0851272825162,
+                "100.0" : 283.0851272825162
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    266.3738138825521,
+                    271.1494255101619,
+                    271.18133261222385,
+                    283.0851272825162,
+                    276.74483827749407
+                ],
+                [
+                    185.87293612568672,
+                    188.94208454820142,
+                    240.45586496775854,
+                    196.50666587068906,
+                    275.86437203689957
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_c3p0_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 227.47487914247958,
+            "scoreError" : 43.27905809297187,
+            "scoreConfidence" : [
+                184.1958210495077,
+                270.7539372354515
+            ],
+            "scorePercentiles" : {
+                "0.0" : 185.0470062368121,
+                "50.0" : 231.67447766713974,
+                "90.0" : 270.96573377415103,
+                "95.0" : 272.2114970157835,
+                "99.0" : 272.2114970157835,
+                "99.9" : 272.2114970157835,
+                "99.99" : 272.2114970157835,
+                "99.999" : 272.2114970157835,
+                "99.9999" : 272.2114970157835,
+                "100.0" : 272.2114970157835
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    272.2114970157835,
+                    185.0470062368121,
+                    240.65968649814417,
+                    237.44830349250475,
+                    259.75386459945867
+                ],
+                [
+                    211.99157434788717,
+                    215.12125339498175,
+                    240.3469085009098,
+                    186.26804549653951,
+                    225.90065184177476
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_dbcp2_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1583.549632237502,
+            "scoreError" : 54.59378085356575,
+            "scoreConfidence" : [
+                1528.9558513839363,
+                1638.1434130910677
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1518.2939575070423,
+                "50.0" : 1581.5352642173339,
+                "90.0" : 1638.127000313156,
+                "95.0" : 1640.0798959784854,
+                "99.0" : 1640.0798959784854,
+                "99.9" : 1640.0798959784854,
+                "99.99" : 1640.0798959784854,
+                "99.999" : 1640.0798959784854,
+                "99.9999" : 1640.0798959784854,
+                "100.0" : 1640.0798959784854
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1589.2349764265252,
+                    1640.0798959784854,
+                    1598.932551620865,
+                    1620.5509393251918,
+                    1613.0291697352216
+                ],
+                [
+                    1553.9321419461626,
+                    1560.3970650691945,
+                    1567.2100727581887,
+                    1518.2939575070423,
+                    1573.8355520081423
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_dbcp2_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 509.1269591877998,
+            "scoreError" : 58.70243896812415,
+            "scoreConfidence" : [
+                450.4245202196756,
+                567.829398155924
+            ],
+            "scorePercentiles" : {
+                "0.0" : 448.2640503156136,
+                "50.0" : 508.5162462468452,
+                "90.0" : 566.9017411603398,
+                "95.0" : 569.162764507918,
+                "99.0" : 569.162764507918,
+                "99.9" : 569.162764507918,
+                "99.99" : 569.162764507918,
+                "99.999" : 569.162764507918,
+                "99.9999" : 569.162764507918,
+                "100.0" : 569.162764507918
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    509.854950566374,
+                    462.6604669930231,
+                    507.1384327663647,
+                    507.1775419273164,
+                    525.3137939925847
+                ],
+                [
+                    569.162764507918,
+                    546.5525310321365,
+                    472.7514739678252,
+                    542.3935858088423,
+                    448.2640503156136
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_dbcp2_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1504.8673737920506,
+            "scoreError" : 95.34059959057129,
+            "scoreConfidence" : [
+                1409.5267742014794,
+                1600.2079733826217
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1377.4106646581047,
+                "50.0" : 1516.332637445345,
+                "90.0" : 1568.4658816058336,
+                "95.0" : 1568.9616294219559,
+                "99.0" : 1568.9616294219559,
+                "99.9" : 1568.9616294219559,
+                "99.99" : 1568.9616294219559,
+                "99.999" : 1568.9616294219559,
+                "99.9999" : 1568.9616294219559,
+                "100.0" : 1568.9616294219559
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1461.7514915023146,
+                    1460.5158291052644,
+                    1471.473172505278,
+                    1377.4106646581047,
+                    1543.8806457280043
+                ],
+                [
+                    1488.7846291626856,
+                    1564.0041512607327,
+                    1555.281229588161,
+                    1556.6102949880042,
+                    1568.9616294219559
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_dbcp2_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 280.6185320584447,
+            "scoreError" : 48.48658026319315,
+            "scoreConfidence" : [
+                232.13195179525155,
+                329.1051123216379
+            ],
+            "scorePercentiles" : {
+                "0.0" : 226.445820747245,
+                "50.0" : 279.6437995488574,
+                "90.0" : 331.80262498432114,
+                "95.0" : 333.68949611198207,
+                "99.0" : 333.68949611198207,
+                "99.9" : 333.68949611198207,
+                "99.99" : 333.68949611198207,
+                "99.999" : 333.68949611198207,
+                "99.9999" : 333.68949611198207,
+                "100.0" : 333.68949611198207
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    296.0535857540766,
+                    302.23081622227727,
+                    333.68949611198207,
+                    283.7003837784947,
+                    314.8207848353727
+                ],
+                [
+                    226.445820747245,
+                    275.58721531922004,
+                    252.38548745403924,
+                    260.62253895908816,
+                    260.64919140265164
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_dbcp2_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1012.6778226946747,
+            "scoreError" : 125.9200134665387,
+            "scoreConfidence" : [
+                886.757809228136,
+                1138.5978361612133
+            ],
+            "scorePercentiles" : {
+                "0.0" : 864.42632108905,
+                "50.0" : 1034.4383639888188,
+                "90.0" : 1095.470947657735,
+                "95.0" : 1096.3207732150745,
+                "99.0" : 1096.3207732150745,
+                "99.9" : 1096.3207732150745,
+                "99.99" : 1096.3207732150745,
+                "99.999" : 1096.3207732150745,
+                "99.9999" : 1096.3207732150745,
+                "100.0" : 1096.3207732150745
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1077.4689472487428,
+                    1096.3207732150745,
+                    1036.6850186810627,
+                    1012.9115531470029,
+                    1062.5986549370616
+                ],
+                [
+                    1087.8225176416793,
+                    873.9411501762834,
+                    982.4115815142129,
+                    1032.191709296575,
+                    864.42632108905
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_hikari_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7685.860199398431,
+            "scoreError" : 104.39493765999296,
+            "scoreConfidence" : [
+                7581.465261738438,
+                7790.255137058424
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7550.37473140926,
+                "50.0" : 7689.669383689194,
+                "90.0" : 7765.760926532025,
+                "95.0" : 7766.613780879991,
+                "99.0" : 7766.613780879991,
+                "99.9" : 7766.613780879991,
+                "99.99" : 7766.613780879991,
+                "99.999" : 7766.613780879991,
+                "99.9999" : 7766.613780879991,
+                "100.0" : 7766.613780879991
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    7730.221508847657,
+                    7622.702674268199,
+                    7550.37473140926,
+                    7758.08523740033,
+                    7746.764795370584
+                ],
+                [
+                    7669.533412156524,
+                    7634.967086273377,
+                    7766.613780879991,
+                    7701.209118920924,
+                    7678.129648457463
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_hikari_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 11309.560120138525,
+            "scoreError" : 4804.548139116385,
+            "scoreConfidence" : [
+                6505.01198102214,
+                16114.10825925491
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7662.352728952884,
+                "50.0" : 11159.233727539857,
+                "90.0" : 16533.598206351733,
+                "95.0" : 16825.791160463607,
+                "99.0" : 16825.791160463607,
+                "99.9" : 16825.791160463607,
+                "99.99" : 16825.791160463607,
+                "99.999" : 16825.791160463607,
+                "99.9999" : 16825.791160463607,
+                "100.0" : 16825.791160463607
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    9801.518002132918,
+                    8431.549566379557,
+                    8059.818892497607,
+                    8649.093438100137,
+                    7662.352728952884
+                ],
+                [
+                    12516.949452946797,
+                    13423.485946961147,
+                    16825.791160463607,
+                    13821.180393605759,
+                    13903.861619344852
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_hikari_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 19008.905276904614,
+            "scoreError" : 12779.750246351796,
+            "scoreConfidence" : [
+                6229.155030552818,
+                31788.65552325641
+            ],
+            "scorePercentiles" : {
+                "0.0" : 9941.037033586377,
+                "50.0" : 19217.959737261503,
+                "90.0" : 27221.399441847276,
+                "95.0" : 27228.239928624007,
+                "99.0" : 27228.239928624007,
+                "99.9" : 27228.239928624007,
+                "99.99" : 27228.239928624007,
+                "99.999" : 27228.239928624007,
+                "99.9999" : 27228.239928624007,
+                "100.0" : 27228.239928624007
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    10942.243870648816,
+                    9941.037033586377,
+                    11812.623405672486,
+                    10725.861015551478,
+                    11603.660716744494
+                ],
+                [
+                    27137.828541469516,
+                    26914.42712704175,
+                    26623.29606885052,
+                    27228.239928624007,
+                    27159.83506085669
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_hikari_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 3858.228728827465,
+            "scoreError" : 1485.8917230515426,
+            "scoreConfidence" : [
+                2372.3370057759225,
+                5344.120451879007
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2681.7686928186413,
+                "50.0" : 3871.4957271248677,
+                "90.0" : 5165.653793194727,
+                "95.0" : 5188.076862047334,
+                "99.0" : 5188.076862047334,
+                "99.9" : 5188.076862047334,
+                "99.99" : 5188.076862047334,
+                "99.999" : 5188.076862047334,
+                "99.9999" : 5188.076862047334,
+                "100.0" : 5188.076862047334
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    3306.0330280785797,
+                    2832.3056145357887,
+                    3134.9559006652726,
+                    2681.7686928186413,
+                    2859.6546494569216
+                ],
+                [
+                    4963.846173521266,
+                    4725.115980692628,
+                    4453.571960287068,
+                    5188.076862047334,
+                    4436.958426171156
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_hikari_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 35838.91692929163,
+            "scoreError" : 25083.189252535172,
+            "scoreConfidence" : [
+                10755.727676756454,
+                60922.1061818268
+            ],
+            "scorePercentiles" : {
+                "0.0" : 19569.644259242577,
+                "50.0" : 35880.62639898767,
+                "90.0" : 52165.18990650865,
+                "95.0" : 52187.218637408965,
+                "99.0" : 52187.218637408965,
+                "99.9" : 52187.218637408965,
+                "99.99" : 52187.218637408965,
+                "99.999" : 52187.218637408965,
+                "99.9999" : 52187.218637408965,
+                "100.0" : 52187.218637408965
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    21196.63918975523,
+                    20180.906561307584,
+                    19967.228049096135,
+                    19634.54018413281,
+                    19569.644259242577
+                ],
+                [
+                    50564.613608220105,
+                    51966.931328405815,
+                    51468.47232228152,
+                    51652.975153065534,
+                    52187.218637408965
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_tomcat_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 3234.6134642727943,
+            "scoreError" : 115.5894903315289,
+            "scoreConfidence" : [
+                3119.0239739412655,
+                3350.202954604323
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3096.467982704075,
+                "50.0" : 3271.483583545167,
+                "90.0" : 3310.333529713886,
+                "95.0" : 3311.532799888502,
+                "99.0" : 3311.532799888502,
+                "99.9" : 3311.532799888502,
+                "99.99" : 3311.532799888502,
+                "99.999" : 3311.532799888502,
+                "99.9999" : 3311.532799888502,
+                "100.0" : 3311.532799888502
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    3280.847132940817,
+                    3096.467982704075,
+                    3283.1368914345144,
+                    3299.2073445188603,
+                    3299.540098142342
+                ],
+                [
+                    3145.9291432766304,
+                    3205.0937308584535,
+                    3162.2594848142335,
+                    3311.532799888502,
+                    3262.1200341495173
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_tomcat_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1216.0445488380583,
+            "scoreError" : 165.21387284472317,
+            "scoreConfidence" : [
+                1050.830675993335,
+                1381.2584216827815
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1004.3008657163812,
+                "50.0" : 1200.3691202254222,
+                "90.0" : 1420.0788510425439,
+                "95.0" : 1430.7912817428523,
+                "99.0" : 1430.7912817428523,
+                "99.9" : 1430.7912817428523,
+                "99.99" : 1430.7912817428523,
+                "99.999" : 1430.7912817428523,
+                "99.9999" : 1430.7912817428523,
+                "100.0" : 1430.7912817428523
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1190.0573711281593,
+                    1200.9579626380896,
+                    1195.5882445652992,
+                    1161.4179593536826,
+                    1199.780277812755
+                ],
+                [
+                    1218.7277110238754,
+                    1430.7912817428523,
+                    1235.156839659721,
+                    1004.3008657163812,
+                    1323.6669747397668
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_tomcat_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 2198.572447262121,
+            "scoreError" : 111.82317236580414,
+            "scoreConfidence" : [
+                2086.749274896317,
+                2310.395619627925
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2061.272741508656,
+                "50.0" : 2186.155710357754,
+                "90.0" : 2307.8645298470874,
+                "95.0" : 2310.8363535728317,
+                "99.0" : 2310.8363535728317,
+                "99.9" : 2310.8363535728317,
+                "99.99" : 2310.8363535728317,
+                "99.999" : 2310.8363535728317,
+                "99.9999" : 2310.8363535728317,
+                "100.0" : 2310.8363535728317
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    2269.207408463952,
+                    2281.118116315386,
+                    2176.078903280436,
+                    2153.0881321277466,
+                    2192.7986652430163
+                ],
+                [
+                    2310.8363535728317,
+                    2215.42454319866,
+                    2146.38685343803,
+                    2061.272741508656,
+                    2179.5127554724913
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_tomcat_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 997.6732678352988,
+            "scoreError" : 237.77859936918483,
+            "scoreConfidence" : [
+                759.894668466114,
+                1235.4518672044837
+            ],
+            "scorePercentiles" : {
+                "0.0" : 700.2010446947421,
+                "50.0" : 1068.0874048623737,
+                "90.0" : 1170.2112124596172,
+                "95.0" : 1176.364617760317,
+                "99.0" : 1176.364617760317,
+                "99.9" : 1176.364617760317,
+                "99.99" : 1176.364617760317,
+                "99.999" : 1176.364617760317,
+                "99.9999" : 1176.364617760317,
+                "100.0" : 1176.364617760317
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1069.3490004758316,
+                    1077.428958900928,
+                    1112.617213464078,
+                    1176.364617760317,
+                    898.7224552899937
+                ],
+                [
+                    1066.825809248916,
+                    776.2984957403928,
+                    700.2010446947421,
+                    984.0945180244703,
+                    1114.8305647533184
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_tomcat_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1519.7279468584452,
+            "scoreError" : 196.69839872235139,
+            "scoreConfidence" : [
+                1323.0295481360938,
+                1716.4263455807966
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1254.3994885857844,
+                "50.0" : 1525.480818979411,
+                "90.0" : 1698.4637627650288,
+                "95.0" : 1704.6943760433708,
+                "99.0" : 1704.6943760433708,
+                "99.9" : 1704.6943760433708,
+                "99.99" : 1704.6943760433708,
+                "99.999" : 1704.6943760433708,
+                "99.9999" : 1704.6943760433708,
+                "100.0" : 1704.6943760433708
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1642.3882432599507,
+                    1607.5979851022623,
+                    1254.3994885857844,
+                    1450.2724671934106,
+                    1595.8361642010077
+                ],
+                [
+                    1485.4312875029336,
+                    1439.5027471191427,
+                    1451.6263591206994,
+                    1565.5303504558883,
+                    1704.6943760433708
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_vibur_1thread",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 4473.892636392161,
+            "scoreError" : 77.4756128694351,
+            "scoreConfidence" : [
+                4396.417023522726,
+                4551.368249261596
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4395.867384888247,
+                "50.0" : 4488.889459416351,
+                "90.0" : 4552.146972358491,
+                "95.0" : 4557.308882489159,
+                "99.0" : 4557.308882489159,
+                "99.9" : 4557.308882489159,
+                "99.99" : 4557.308882489159,
+                "99.999" : 4557.308882489159,
+                "99.9999" : 4557.308882489159,
+                "100.0" : 4557.308882489159
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    4500.716593295786,
+                    4492.7032128276405,
+                    4395.867384888247,
+                    4435.605862273094,
+                    4463.792628956235
+                ],
+                [
+                    4557.308882489159,
+                    4485.075706005062,
+                    4504.7982485713255,
+                    4505.689781182483,
+                    4397.368063432583
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_vibur_32threads",
+        "mode" : "thrpt",
+        "threads" : 32,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 22.034463401433246,
+            "scoreError" : 1.8549310943162622,
+            "scoreConfidence" : [
+                20.179532307116983,
+                23.88939449574951
+            ],
+            "scorePercentiles" : {
+                "0.0" : 19.755027245685763,
+                "50.0" : 21.976961018869446,
+                "90.0" : 23.642078455988305,
+                "95.0" : 23.679507479708516,
+                "99.0" : 23.679507479708516,
+                "99.9" : 23.679507479708516,
+                "99.99" : 23.679507479708516,
+                "99.999" : 23.679507479708516,
+                "99.9999" : 23.679507479708516,
+                "100.0" : 23.679507479708516
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    23.679507479708516,
+                    23.305217242506405,
+                    21.465380054406292,
+                    22.055195572762223,
+                    19.755027245685763
+                ],
+                [
+                    21.89872646497667,
+                    22.618948148094038,
+                    20.774239402042994,
+                    21.531029468564558,
+                    23.26136293558496
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_vibur_4threads",
+        "mode" : "thrpt",
+        "threads" : 4,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1506.3071076276995,
+            "scoreError" : 366.2900107988093,
+            "scoreConfidence" : [
+                1140.01709682889,
+                1872.5971184265088
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1351.5648269566748,
+                "50.0" : 1403.1897295455212,
+                "90.0" : 1977.4784436618545,
+                "95.0" : 1981.3456340175828,
+                "99.0" : 1981.3456340175828,
+                "99.9" : 1981.3456340175828,
+                "99.99" : 1981.3456340175828,
+                "99.999" : 1981.3456340175828,
+                "99.9999" : 1981.3456340175828,
+                "100.0" : 1981.3456340175828
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1367.5284596416573,
+                    1400.2427549241775,
+                    1981.3456340175828,
+                    1455.637116993001,
+                    1351.5648269566748
+                ],
+                [
+                    1379.79092515512,
+                    1360.2467453392492,
+                    1417.9041786223665,
+                    1406.136704166865,
+                    1942.6737304602998
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_vibur_64threads",
+        "mode" : "thrpt",
+        "threads" : 64,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 21.50191384392308,
+            "scoreError" : 1.9578207865138864,
+            "scoreConfidence" : [
+                19.544093057409196,
+                23.459734630436966
+            ],
+            "scorePercentiles" : {
+                "0.0" : 19.87866839737425,
+                "50.0" : 21.239424189103126,
+                "90.0" : 23.69332487981296,
+                "95.0" : 23.7544700605016,
+                "99.0" : 23.7544700605016,
+                "99.9" : 23.7544700605016,
+                "99.99" : 23.7544700605016,
+                "99.999" : 23.7544700605016,
+                "99.9999" : 23.7544700605016,
+                "100.0" : 23.7544700605016
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    22.351872699472647,
+                    21.979925453955904,
+                    21.57683702132135,
+                    20.902011356884902,
+                    20.865160844045977
+                ],
+                [
+                    23.143018253615175,
+                    20.28046452357086,
+                    20.28670982848813,
+                    23.7544700605016,
+                    19.87866839737425
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.midplane.benchmarks.connectionpool.ConnectionPoolBenchmark.p8_vibur_8threads",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 2,
+        "jvm" : "/home/zodvik/.local/opt/jdk-17.0.2/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.2+8-86",
+        "warmupIterations" : 5,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "2 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1236.8379277181562,
+            "scoreError" : 159.49485968171587,
+            "scoreConfidence" : [
+                1077.3430680364404,
+                1396.332787399872
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1141.6041654856258,
+                "50.0" : 1220.1582785896048,
+                "90.0" : 1443.7406103656504,
+                "95.0" : 1455.973410323058,
+                "99.0" : 1455.973410323058,
+                "99.9" : 1455.973410323058,
+                "99.99" : 1455.973410323058,
+                "99.999" : 1455.973410323058,
+                "99.9999" : 1455.973410323058,
+                "100.0" : 1455.973410323058
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    1455.973410323058,
+                    1258.3895747050026,
+                    1268.4706114362464,
+                    1333.6454107489803,
+                    1295.7565932554892
+                ],
+                [
+                    1145.8916952762986,
+                    1141.6041654856258,
+                    1144.7850188719572,
+                    1141.9358146046966,
+                    1181.9269824742073
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

@@ -206,3 +206,71 @@ Tomcat degrades gradually as threads increase — there is no cliff. Its main li
 If thread count reliably exceeds pool size and variance is a concern, **Tomcat (non-fair)** offers the best combination of throughput and predictability in the high-contention regime.
 
 **Vibur requires caution**: it is fast when uncontended but collapses to near-zero throughput under any pool oversubscription. Its use should be limited to services where thread count is strictly bounded below pool size.
+
+## Profiling the bimodal: root cause investigation
+
+The bimodal behavior at the saturation point warrants deeper investigation. A dedicated profiling benchmark (`HikariProfilingBenchmark`) and orchestration script (`profile-hikari.sh`) are provided to systematically identify the root cause.
+
+### Refined hypothesis: thread-local list population
+
+Reading HikariCP's `ConcurrentBag` source reveals a sharper hypothesis than "JIT compilation lottery":
+
+1. `ConcurrentBag.requite()` only adds entries to a thread's local list when `waiters.get() == 0`.
+2. At threads == pool_size, whether `waiters == 0` during early returns depends on OS thread scheduling during warmup.
+3. Once the system enters a mode — thread-local lists populated (fast) or empty (slow) — the mode is **self-reinforcing**: a dynamical system with two stable attractors.
+
+The fast mode (~49k ops/ms) shows nearly linear scaling: 8 threads each doing thread-local borrows ≈ 2× the 4-thread result (~27k). The slow mode (~17k ops/ms) matches the oversubscribed regime (32 threads ≈ ~15k), consistent with all traffic going through the shared list / handoff queue.
+
+### ConcurrentBag code paths
+
+| Path | Mechanism | When used |
+|---|---|---|
+| **Phase 1: thread-local** | `threadList.get()` → LIFO scan → CAS `NOT_IN_USE→IN_USE` | Thread has cached entries |
+| **Phase 2: shared list** | `CopyOnWriteArrayList` iteration → CAS on each entry | Thread-local list empty or all entries in use |
+| **Phase 3: handoff queue** | `SynchronousQueue.poll()` with timeout | No entries available; waits for a return |
+
+On return (`requite()`):
+- If `waiters > 0`: offer to `SynchronousQueue` (handoff to a waiting thread)
+- If `waiters == 0`: add to the returning thread's local list (building up the fast path for next borrow)
+
+This creates the bifurcation: if threads stagger during warmup → some returns see `waiters == 0` → thread-local lists grow → fast mode. If threads synchronize → returns always see `waiters > 0` → handoff instead of thread-local → slow mode.
+
+### Profiling experiments
+
+The `profile-hikari.sh` script runs a series of targeted experiments:
+
+```bash
+# Build
+./profile-hikari.sh build
+
+# Recommended investigation order:
+./profile-hikari.sh baseline             # 1. Reproduce bimodal (10 forks)
+./profile-hikari.sh force-threadlocal    # 2. Pre-warm thread-local lists → expect all-fast
+./profile-hikari.sh flush-threadlocal    # 3. Flush thread-local each iteration → expect all-slow
+./profile-hikari.sh c1-only             # 4. Disable C2 → test JIT hypothesis
+./profile-hikari.sh no-osr              # 5. Disable OSR → test OSR hypothesis
+./profile-hikari.sh controls            # 6. Verify 1t/4t/16t show no bimodal
+./profile-hikari.sh warmup-sweep        # 7. Vary warmup 1..50 iterations
+./profile-hikari.sh flame               # 8. Async-profiler flame graphs per fork
+./profile-hikari.sh jit-log             # 9. JIT compilation logs per fork
+```
+
+Each experiment runs N forks (default 10, override with `FORKS=N`) and automatically classifies each fork as fast or slow using Otsu's method.
+
+| Experiment | What it tests | Bimodal eliminated? → conclusion |
+|---|---|---|
+| `force-threadlocal` | Pre-populate each thread's local list | Yes → thread-local population is root cause |
+| `flush-threadlocal` | Clear thread-local lists every iteration | All slow → confirms thread-local is the differentiator |
+| `c1-only` | `-XX:TieredStopAtLevel=1` (no C2) | Yes → C2 compilation is a necessary condition |
+| `no-osr` | `-XX:-UseOnStackReplacement` | Yes → OSR is the non-deterministic factor |
+| `warmup-sweep` | Vary warmup from 1 to 50 iterations | Converges → warmup duration matters |
+| `flame` | Async-profiler flame graphs per fork | Fast forks: `threadList.get` hot; slow forks: `SynchronousQueue.poll` hot |
+| `jit-log` | `-XX:+PrintCompilation -XX:+PrintInlining` | Diff `ConcurrentBag.borrow` compilation between fast/slow forks |
+
+### Diagnostic output
+
+The profiling benchmark prints `[DIAG]` lines to stderr at teardown:
+- Per-thread `threadLocal.size` — the key signal. Fast-mode threads will have entries; slow-mode threads will have zero.
+- Shared list entry states (`NOT_IN_USE`, `IN_USE`, etc.)
+
+These are captured in the per-fork log files under `profiling/<experiment>/fork_N.log`.

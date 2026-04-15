@@ -155,15 +155,56 @@ cmd_baseline() {
 }
 
 cmd_force_threadlocal() {
-    header "HYPOTHESIS TEST: Force thread-local population"
-    info "Pre-warm each thread's ConcurrentBag thread-local list before"
-    info "JMH warmup begins (serialized per-thread setup, waiters == 0)."
+    header "HYPOTHESIS TEST: Force thread-local population (serialized)"
+    info "Pre-warm each thread's ConcurrentBag thread-local list via serialized"
+    info "per-thread setup (waiters == 0 on each return)."
     info ""
-    info "If ALL forks are fast → root cause is thread-local population."
-    info "If bimodal persists  → something else (JIT, scheduling) is involved."
+    info "CAVEAT: serialized setup means all threads cache the SAME connection"
+    info "(shared list index 0). This tests population, NOT affinity."
+    info ""
+    info "If ALL forks are fast → population alone is sufficient."
+    info "If bimodal persists  → affinity (unique entries) is needed."
     echo ""
     ensure_jar
     run_forks "force-threadlocal" "saturated_8t" "force_threadlocal"
+}
+
+cmd_force_affinity() {
+    header "HYPOTHESIS TEST: Force 1:1 thread-to-connection affinity"
+    info "Coordinated parallel warmup: all threads borrow simultaneously"
+    info "(each gets a different connection), hold via Phaser barrier, then"
+    info "return simultaneously. Each thread's local list gets a UNIQUE connection."
+    info ""
+    info "If ALL forks are fast → thread-local AFFINITY is the root cause."
+    info "If bimodal persists  → affinity is not the differentiator."
+    echo ""
+    ensure_jar
+    run_forks "force-affinity" "saturated_8t" "force_affinity"
+}
+
+cmd_sleep_only() {
+    header "CONTROL: Sleep-only prewarm (no borrow/return)"
+    info "Each thread sleeps 100ms in serialized setup (total ~800ms)."
+    info "NO borrow/return — thread-local lists remain EMPTY."
+    info ""
+    info "If bimodal disappears → initialization time is the factor, not"
+    info "                        thread-local population."
+    info "If bimodal persists   → thread-local population matters, not just time."
+    echo ""
+    ensure_jar
+    run_forks "sleep-only" "saturated_8t" "sleep_only"
+}
+
+cmd_borrow_once() {
+    header "CONTROL: Single borrow/return per thread (minimal population)"
+    info "Each thread does exactly 1 borrow/return (serialized, waiters==0)."
+    info "Thread-local list gets 1 entry. Tests if one cycle is sufficient."
+    info ""
+    info "If unimodal → even minimal thread-local population eliminates bimodal."
+    info "If bimodal  → more warmup cycles needed."
+    echo ""
+    ensure_jar
+    run_forks "borrow-once" "saturated_8t" "borrow_once"
 }
 
 cmd_flush_threadlocal() {
@@ -353,6 +394,8 @@ cmd_all_portable() {
     echo ""
     cmd_force_threadlocal
     echo ""
+    cmd_force_affinity
+    echo ""
     cmd_flush_threadlocal
     echo ""
     cmd_c1_only
@@ -396,10 +439,12 @@ case "$MODE" in
     build)              cmd_build ;;
     baseline)           cmd_baseline ;;
     force-threadlocal)  cmd_force_threadlocal ;;
+    force-affinity)     cmd_force_affinity ;;
+    sleep-only)         cmd_sleep_only ;;
+    borrow-once)        cmd_borrow_once ;;
     flush-threadlocal)  cmd_flush_threadlocal ;;
     c1-only)            cmd_c1_only ;;
-    no-osr)             cmd_no_osr ;;
-    jit-log)            cmd_jit_log ;;
+    no-osr)             cmd_no_osr ;;    jit-log)            cmd_jit_log ;;
     warmup-sweep)       cmd_warmup_sweep ;;
     flame)              cmd_flame ;;
     perfasm)            cmd_perfasm ;;
@@ -418,7 +463,10 @@ $(echo -e "${YELLOW}Usage:${NC} $0 <mode>")
 
 $(echo -e "${GREEN}Hypothesis Tests (start here):${NC}")
   baseline             Reproduce bimodal with $FORKS forks (natural warmup)
-  force-threadlocal    Pre-warm thread-local lists (should eliminate bimodal)
+  force-threadlocal    Pre-warm thread-local lists (serialized, same connection)
+  force-affinity       Pre-warm with unique connections per thread (1:1 affinity)
+  sleep-only           Sleep-only prewarm (no borrow/return, tests time delay)
+  borrow-once          Single borrow/return per thread (minimal population)
   flush-threadlocal    Flush thread-local lists each iteration (should force slow)
   c1-only              Disable C2 compiler (test JIT hypothesis)
   no-osr               Disable on-stack replacement
@@ -450,9 +498,10 @@ $(echo -e "${YELLOW}Examples:${NC}")
 $(echo -e "${YELLOW}Recommended investigation order:${NC}")
   1. $0 build
   2. $0 baseline              # confirm bimodal
-  3. $0 force-threadlocal     # test thread-local hypothesis
-  4. $0 flush-threadlocal     # negative control
-  5. $0 c1-only               # test JIT hypothesis
+  3. $0 force-affinity        # test thread-local affinity hypothesis (KEY)
+  4. $0 force-threadlocal     # compare: same connection for all threads
+  5. $0 flush-threadlocal     # negative control
+  6. $0 c1-only               # test JIT hypothesis
   6. $0 controls              # confirm non-bimodal at other thread counts
   7. $0 flame                 # flame graph comparison (fast vs slow forks)
   8. $0 jit-log               # JIT compilation diff

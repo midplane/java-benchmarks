@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,19 +44,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </ol>
  *
  * <h2>Experiments</h2>
- * This benchmark supports three pre-warming modes via the {@code prewarm}
+ * This benchmark supports four pre-warming modes via the {@code prewarm}
  * parameter:
  * <ul>
  *   <li>{@code none} — natural warmup; reproduces the bimodal behavior.</li>
  *   <li>{@code force_threadlocal} — serialized per-thread warmup ensures
  *       each thread's ConcurrentBag thread-local list is populated before
- *       JMH warmup begins.  If this eliminates the bimodal, the root cause
- *       is thread-local population timing, not JIT.</li>
+ *       JMH warmup begins.  <b>Caveat:</b> serialized setup means all threads
+ *       cache the same connection (index 0 in shared list).</li>
+ *   <li>{@code force_affinity} — coordinated parallel warmup: all threads
+ *       borrow simultaneously (each gets a different connection), hold them,
+ *       then return simultaneously.  Each thread's local list gets a unique
+ *       connection.  This tests whether 1:1 thread-to-connection affinity
+ *       eliminates the bimodal.</li>
  *   <li>{@code flush_threadlocal} — clears each thread's thread-local list
- *       at the start of every measurement iteration via reflection.  Forces
- *       the system through the shared-list/handoff path repeatedly.  If this
- *       produces consistent slow-mode results, it confirms the thread-local
- *       list is the differentiator.</li>
+ *       at the start of every measurement iteration via reflection.</li>
  * </ul>
  *
  * <h2>Diagnostic Output</h2>
@@ -108,17 +111,30 @@ public class HikariProfilingBenchmark {
          * Pre-warming mode:
          * <ul>
          *   <li>"none" — natural warmup (reproduces bimodal)</li>
-         *   <li>"force_threadlocal" — serialize per-thread setup to ensure
-         *       each thread's ConcurrentBag thread-local list is populated</li>
+         *   <li>"force_threadlocal" — serialize per-thread setup; all threads
+         *       cache the same connection (shared list index 0)</li>
+         *   <li>"force_affinity" — coordinated parallel setup; each thread
+         *       gets a unique connection in its thread-local list</li>
          *   <li>"flush_threadlocal" — clear thread-local lists at start of
-         *       each measurement iteration (forces slow path)</li>
+         *       each measurement iteration</li>
+         *   <li>"sleep_only" — just sleep ~100ms per thread in trial setup,
+         *       no borrow/return. Tests if initialization time alone matters.</li>
+         *   <li>"borrow_once" — single borrow/return per thread (serialized).
+         *       Minimal thread-local population; tests if one cycle is enough.</li>
          * </ul>
          */
-        @Param({"none", "force_threadlocal", "flush_threadlocal"})
+        @Param({"none", "force_threadlocal", "force_affinity", "flush_threadlocal",
+                 "sleep_only", "borrow_once"})
         String prewarm;
 
         /** Serializes thread-local pre-warming so each thread warms alone. */
         final Semaphore warmGate = new Semaphore(1);
+
+        /**
+         * Phaser for coordinated parallel warmup (force_affinity mode).
+         * Threads register dynamically; the phaser coordinates borrow-hold-return.
+         */
+        final Phaser affinityPhaser = new Phaser(0);
 
         @Setup(Level.Trial)
         public void setup() {
@@ -176,6 +192,15 @@ public class HikariProfilingBenchmark {
                 System.err.println("[DIAG] entry states: NOT_IN_USE=" + notInUse
                         + " IN_USE=" + inUse + " REMOVED=" + removed
                         + " RESERVED=" + reserved);
+
+                // Print identity hash of each entry for cross-referencing with
+                // per-thread local lists.
+                StringBuilder ids = new StringBuilder("[DIAG] sharedList entry ids:");
+                for (int idx = 0; idx < sharedList.size(); idx++) {
+                    ids.append(" [").append(idx).append("]=")
+                       .append(System.identityHashCode(sharedList.get(idx)));
+                }
+                System.err.println(ids.toString());
             } catch (Exception e) {
                 System.err.println("[DIAG] Pool introspection failed: " + e);
             }
@@ -210,42 +235,84 @@ public class HikariProfilingBenchmark {
 
         /**
          * Trial-level setup: optionally pre-populate this thread's
-         * ConcurrentBag thread-local list by borrowing/returning connections
-         * while serialized (no concurrent borrowers → waiters == 0 → requite()
-         * populates the thread-local list).
+         * ConcurrentBag thread-local list.
+         *
+         * <p><b>force_threadlocal</b>: serialized borrow/return — fast but all
+         * threads cache the same connection (shared list index 0).</p>
+         *
+         * <p><b>force_affinity</b>: coordinated parallel borrow — all threads
+         * borrow simultaneously (each gets a different connection), hold them
+         * via a Phaser barrier, then return simultaneously.  Since no thread
+         * is borrowing during the return phase, {@code waiters == 0} and each
+         * thread's unique connection goes into its own thread-local list.</p>
          */
         @Setup(Level.Trial)
         public void prewarm(PoolState pool) throws Exception {
-            if (!"force_threadlocal".equals(pool.prewarm)) return;
-
-            pool.warmGate.acquire();
-            try {
-                // Borrow and return several times to build up the thread-local
-                // list.  Each return sees waiters == 0 (we're alone) and adds
-                // the entry to this thread's list.
-                for (int i = 0; i < 10; i++) {
-                    try (Connection c = pool.dataSource.getConnection()) {
-                        // no-op: just populate the thread-local list
+            if ("force_threadlocal".equals(pool.prewarm)) {
+                pool.warmGate.acquire();
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        try (Connection c = pool.dataSource.getConnection()) {
+                            // no-op: just populate the thread-local list
+                        }
                     }
+                    Thread.sleep(5);
+                } finally {
+                    pool.warmGate.release();
                 }
-                // Brief sleep ensures this thread's returns fully settle
-                // before the next thread starts.
-                Thread.sleep(5);
-            } finally {
-                pool.warmGate.release();
+            } else if ("force_affinity".equals(pool.prewarm)) {
+                // Register this thread with the phaser
+                pool.affinityPhaser.register();
+
+                // Phase 0 → 1: all threads borrow simultaneously.
+                // With 8 threads and 8 connections, each thread gets a
+                // different connection via CAS on the shared list.
+                pool.affinityPhaser.arriveAndAwaitAdvance();
+                Connection c = pool.dataSource.getConnection();
+
+                // Phase 1 → 2: all threads hold their connections.
+                // No thread is in borrow(), so waiters == 0.
+                pool.affinityPhaser.arriveAndAwaitAdvance();
+
+                // All return simultaneously.  requite() sees waiters == 0
+                // and adds each thread's unique connection to its local list.
+                c.close();
+
+                // Phase 2 → 3: wait for all returns to complete.
+                pool.affinityPhaser.arriveAndAwaitAdvance();
+
+                // Deregister so the phaser doesn't block future phases.
+                pool.affinityPhaser.arriveAndDeregister();
+            } else if ("sleep_only".equals(pool.prewarm)) {
+                // Pure time delay — no borrow/return, no thread-local population.
+                // Tests whether initialization time alone eliminates bimodal.
+                // Total delay across 8 serialized threads ≈ 800ms, comparable
+                // to the time force_threadlocal spends in setup.
+                pool.warmGate.acquire();
+                try {
+                    Thread.sleep(100);
+                } finally {
+                    pool.warmGate.release();
+                }
+            } else if ("borrow_once".equals(pool.prewarm)) {
+                // Minimal thread-local population: single borrow/return per thread.
+                // Serialized so waiters == 0 on return → entry goes to thread-local.
+                // Tests if one cycle is sufficient vs. the 10 cycles in force_threadlocal.
+                pool.warmGate.acquire();
+                try {
+                    try (Connection c = pool.dataSource.getConnection()) {
+                        // single borrow/return
+                    }
+                    Thread.sleep(5);
+                } finally {
+                    pool.warmGate.release();
+                }
             }
         }
 
         /**
          * Iteration-level setup: optionally clear this thread's ConcurrentBag
-         * thread-local list at the start of every iteration.  This forces the
-         * system through the shared-list scan / handoff-queue path, which is
-         * the "slow mode" code path.
-         *
-         * <p>Note: the list may be partially repopulated during the iteration
-         * if threads happen to stagger.  The degree of repopulation is itself
-         * informative — it shows how quickly the system can recover from a
-         * thread-local flush.</p>
+         * thread-local list at the start of every iteration.
          */
         @Setup(Level.Iteration)
         public void flushIfRequested(PoolState pool) {
@@ -274,11 +341,12 @@ public class HikariProfilingBenchmark {
 
         /**
          * Trial-level teardown: print this thread's ConcurrentBag thread-local
-         * list size.  This is the key diagnostic: fast-mode threads will have
-         * entries in their list; slow-mode threads will have zero.
+         * list size AND the identity hash codes of cached entries.  This reveals
+         * whether threads have unique connections (fast path: no CAS contention)
+         * or all share the same connection (slow path: 7/8 CAS failures).
          */
         @TearDown(Level.Trial)
-        public void reportThreadLocalSize(PoolState pool) {
+        public void reportThreadLocalState(PoolState pool) {
             try {
                 Object hikariPool = PoolState.getField(pool.dataSource, "pool");
                 if (hikariPool == null) {
@@ -293,8 +361,21 @@ public class HikariProfilingBenchmark {
                         (ThreadLocal<List<Object>>) threadListField.get(bag);
                 List<Object> myList = threadLocal.get();
 
-                System.err.println("[DIAG] " + Thread.currentThread().getName()
-                        + " threadLocal.size=" + (myList != null ? myList.size() : "null"));
+                StringBuilder sb = new StringBuilder();
+                sb.append("[DIAG] ").append(Thread.currentThread().getName())
+                  .append(" threadLocal.size=").append(myList != null ? myList.size() : "null");
+
+                if (myList != null && !myList.isEmpty()) {
+                    sb.append(" entries=[");
+                    for (int i = 0; i < myList.size(); i++) {
+                        if (i > 0) sb.append(",");
+                        Object entry = myList.get(i);
+                        sb.append(System.identityHashCode(entry));
+                    }
+                    sb.append("]");
+                }
+
+                System.err.println(sb.toString());
             } catch (Exception e) {
                 System.err.println("[DIAG] Thread-local introspection failed for "
                         + Thread.currentThread().getName() + ": " + e.getMessage());

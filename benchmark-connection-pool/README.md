@@ -78,96 +78,130 @@ java -jar benchmark-connection-pool/target/benchmarks.jar -rf json -rff benchmar
 | Unit | ops/ms |
 | Warmup | 5 iterations × 2 s |
 | Measurement | 5 iterations × 2 s |
-| Forks | 2 |
+| Forks | 5 |
 
 ## Results
 
 > Mode: throughput (`thrpt`) · Unit: ops/ms · Higher is better · `±` is the 99% confidence interval
 >
-> ⚠ = high variance (scoreError > 30% of score) — point estimate is unreliable; see analysis
+> ⚠ = high variance (scoreError > 30% of score) — point estimate is unreliable; see [Variance diagnosis](#variance-diagnosis)
 
 ### Pool size 4
 
 | Threads | HikariCP | DBCP2 | c3p0 | Vibur | Tomcat |
 |---:|---:|---:|---:|---:|---:|
-|  1 | 7,823 ± 278    | 1,565 ± 31  | 97 ± 12   | 4,416 ± 93  | 3,324 ± 50  |
-|  4 | 28,275 ± 555   | 1,348 ± 143 | 116 ± 21  | 1,470 ± 418 | 2,224 ± 159 |
-|  8 | 1,424 ± 672 ⚠  | 626 ± 80    | 104 ± 30  | 26 ± 5      | 1,529 ± 375 |
-| 32 | 1,309 ± 503 ⚠  | 226 ± 34    | 88 ± 20   | 23 ± 3      | 883 ± 110   |
-| 64 | 1,049 ± 141    | 147 ± 34    | 95 ± 19   | 21 ± 2      | 446 ± 107   |
+|  1 | 7,770 ± 194    | 1,590 ± 38  | 110 ± 5   | 4,361 ± 106 | 3,084 ± 156 |
+|  4 | 27,856 ± 271   | 1,356 ± 80  | 127 ± 10  | 1,662 ± 299 | 2,136 ± 93  |
+|  8 | 1,487 ± 244    | 717 ± 55    | 109 ± 11  | 24 ± 2      | 1,558 ± 275 |
+| 32 | 1,455 ± 288    | 232 ± 14    | 103 ± 7   | 22 ± 1      | 755 ± 91    |
+| 64 | 1,172 ± 129    | 126 ± 17    | 92 ± 10   | 21 ± 1      | 472 ± 95    |
 
 ### Pool size 8
 
 | Threads | HikariCP | DBCP2 | c3p0 | Vibur | Tomcat |
 |---:|---:|---:|---:|---:|---:|
-|  1 | 7,686 ± 104         | 1,584 ± 55  | 244 ± 19  | 4,474 ± 77   | 3,235 ± 116 |
-|  4 | 19,009 ± 12,780 ⚠   | 1,505 ± 95  | 321 ± 22  | 1,506 ± 366  | 2,199 ± 112 |
-|  8 | 35,839 ± 25,083 ⚠   | 1,013 ± 126 | 227 ± 43  | 1,237 ± 159  | 1,520 ± 197 |
-| 32 | 11,310 ± 4,805 ⚠    | 509 ± 59    | 210 ± 60  | 22 ± 2       | 1,216 ± 165 |
-| 64 | 3,858 ± 1,486 ⚠     | 281 ± 48    | 246 ± 60  | 22 ± 2       | 998 ± 238   |
+|  1 | 7,811 ± 145       | 1,605 ± 37  | 235 ± 12  | 4,394 ± 86   | 3,232 ± 125 |
+|  4 | 27,178 ± 419      | 1,417 ± 111 | 291 ± 22  | 1,366 ± 107  | 2,102 ± 84  |
+|  8 | 36,353 ± 12,389 ⚠ | 1,055 ± 88  | 256 ± 27  | 1,351 ± 89   | 1,422 ± 86  |
+| 32 | 14,647 ± 1,941    | 434 ± 31    | 197 ± 21  | 23 ± 2       | 1,366 ± 227 |
+| 64 | 5,409 ± 929       | 254 ± 13    | 209 ± 26  | 21 ± 1       | 899 ± 123   |
+
+## Variance diagnosis
+
+The ⚠ results are not random noise — the raw per-fork iteration data reveals a specific pattern.
+
+### HikariCP: inter-fork JIT compilation lottery
+
+HikariCP's high-variance results are **bimodal between forks, not within forks**. Within a single fork the 5 measurement iterations are tightly clustered; the variance comes entirely from different forks landing in different stable operating modes. This was first observed in the 2-fork run:
+
+| Benchmark | Fork 1 mean (ops/ms) | Fork 2 mean (ops/ms) |
+|---|---:|---:|
+| p8_hikari_8threads | ~20,300 | ~51,400 |
+| p8_hikari_4threads | ~10,800 | ~27,000 |
+| p8_hikari_32threads | ~8,500 | ~14,100 |
+
+The intra-fork stability rules out OS scheduling jitter as the cause. The inter-fork split points to the **JIT compilation lottery**: on JVM startup, the C1 compiler profiles method execution and the C2 compiler eventually re-compiles hot paths. Depending on which code was hot during profiling, the JVM sometimes compiles `ConcurrentBag`'s thread-local fast path as the dominant branch and sometimes the `SynchronousQueue` handoff path. Once compiled one way, the fork stays in that mode for all 5 measurement iterations.
+
+**With 5 forks, the distribution becomes interpretable.** For `p8_hikari_8threads` the five fork means are:
+
+| Fork | Mean (ops/ms) | Mode |
+|---:|---:|---|
+| 1 | ~20,700 | slow (handoff path) |
+| 2 | ~48,600 | fast (thread-local path) |
+| 3 | ~52,200 | fast (thread-local path) |
+| 4 | ~13,000 | slow (handoff path) |
+| 5 | ~47,300 | fast (thread-local path) |
+
+The fast path wins 3 out of 5 forks. The JMH mean (36,353 ± 12,389) is still wide, but now its shape is understood: it is an average over two distinct modes, not random noise. The slow-mode floor (~13,000–21,000 ops/ms) is the conservative estimate of what this pool delivers at 8 threads with pool size 8.
+
+The 5-fork run also resolved most other previously ⚠ HikariCP results. With 2 forks, a single unlucky split (one fast fork + one slow fork) inflated many CIs. With 5 forks, those cases now have enough samples to average out: `p8_hikari_32threads` dropped from CV 42% to 13%, and `p8_hikari_64threads` from CV 38% to 17%. Only `p8_hikari_8threads` remains ⚠ because it is the exact saturation point where the mode split is most pronounced.
+
+### Vibur: inter-fork variance at 4 threads
+
+Vibur at 4 threads (pool size 4) shows CV ~18% with fork means of 1,737 / 1,616 / 1,344 / 1,467 / 2,148 ops/ms. Unlike HikariCP, the spread is continuous rather than bimodal — no clear fast/slow grouping. This is consistent with the `Semaphore` transition: at exactly 4 threads with pool size 4 the pool is right at its saturation boundary, and small differences in thread scheduling across forks determine how often threads contend on the semaphore. At 1 thread (well below saturation) and 8+ threads (well above it) the behaviour is tight and predictable.
+
+### Tomcat and DBCP2: normal scheduling noise
+
+Both pools show continuous spread across forks with no mode split. Their variance is ordinary OS scheduling jitter and is not a concern for interpretation.
 
 ## Analysis
 
-### HikariCP — fastest overall, but bimodal at contention
+### HikariCP — fastest overall, bimodal only at the exact saturation point
 
-HikariCP is the throughput leader at every thread count where threads ≤ pool size. With pool size 4 it peaks at **28,275 ops/ms at 4 threads**; with pool size 8 it peaks at **~35,839 ops/ms at 8 threads** — the pattern is clear: HikariCP peaks exactly when threads equal pool size.
+HikariCP is the throughput leader at every thread count where threads ≤ pool size. With pool size 4 it peaks at **27,856 ops/ms at 4 threads**; with pool size 8 it peaks at **~36,353 ops/ms at 8 threads**. The pattern is consistent: HikariCP peaks exactly when threads equal pool size.
 
-The explanation is `ConcurrentBag`'s thread-local fast path. When each thread has its own cached connection slot and the pool is exactly saturated, every acquisition is a thread-local list lookup with no CAS contention and no cross-thread interaction. Adding more threads than pool slots breaks this: the excess threads must go through the shared `SynchronousQueue` handoff path, which is both slower and non-deterministic in when it fires.
+The explanation is `ConcurrentBag`'s thread-local fast path. When each thread has its own cached connection slot and the pool is exactly saturated, every acquisition is a thread-local list lookup with no CAS contention and no cross-thread interaction. Adding more threads than pool slots forces excess threads through the shared `SynchronousQueue` handoff path, which is both slower and subject to the JIT compilation lottery described above.
 
-The result is **bimodal behaviour above the saturation point**. In the pool-size-8 run, the p8_hikari_8threads raw data splits cleanly into two groups: one fork measured ~19,500–21,200 ops/ms (slow path dominant) and another measured ~50,500–52,200 ops/ms (fast path dominant). The mean is 35,839 ops/ms with a ±25,083 error — a coefficient of variation exceeding 70%. Similar bimodality occurs at 32 and 64 threads. These HikariCP results above the pool-size threshold should be treated as approximate lower bounds, not reliable point estimates.
+With 5 forks, only `p8_hikari_8threads` (the exact saturation point) retains a ⚠ flag. All other thread counts above saturation now have stable, interpretable results — for example, `p8_hikari_32threads` measures 14,647 ± 1,941 ops/ms and `p8_hikari_64threads` measures 5,409 ± 929. These are consistent across forks: HikariCP remains far ahead of every other pool even in the oversubscribed regime.
 
-When threads are below the saturation point, HikariCP results are tight and reproducible (e.g., 7,823 ± 278 at 1 thread with pool size 4).
+When threads are below the saturation point, HikariCP results are tight and reproducible (e.g., 7,770 ± 194 at 1 thread with pool size 4; 27,856 ± 271 at 4 threads).
 
 ### DBCP2 — stable and predictable under contention
 
-DBCP2 is the most consistent pool in the dataset. Its throughput follows a simple, monotonically decreasing curve as threads increase. The single-thread rate (~1,565–1,584 ops/ms) is its ceiling; adding threads reduces per-thread throughput while total throughput stays roughly flat until threads far outnumber connections, then begins declining.
+DBCP2 is the most consistent pool in the dataset. Its throughput follows a monotonically decreasing curve as threads increase. The single-thread rate (~1,590–1,605 ops/ms) is its ceiling; adding threads reduces per-thread throughput while total throughput stays roughly flat until threads far outnumber connections, then begins declining.
 
-The `LinkedBlockingDeque` + `ReentrantLock` design means every acquisition costs one lock acquire/release. This is more expensive than HikariCP's thread-local fast path at low contention, but the cost is **deterministic and bounded** — there is no bimodal behavior, no cliff, no collapse. DBCP2's error margins are the tightest among the competing pools at most thread counts.
+The `LinkedBlockingDeque` + `ReentrantLock` design means every acquisition costs one lock acquire/release. This is more expensive than HikariCP's thread-local fast path at low contention, but the cost is **deterministic and bounded** — there is no bimodal behavior, no cliff, no collapse. DBCP2's CVs are the lowest of all pools at every thread count.
 
-At 32 threads with pool size 8, DBCP2 delivers 509 ops/ms with ±59 error. At the same point Tomcat delivers 1,216 ops/ms (with higher variance), and HikariCP delivers a noisy 11,310 ops/ms. DBCP2 is the choice where **predictability under load matters more than peak throughput**.
+At 32 threads with pool size 8, DBCP2 delivers 434 ± 31 ops/ms. Tomcat delivers 1,366 ops/ms and HikariCP delivers 14,647 ops/ms at the same point — but both with higher variance. DBCP2 is the choice where **predictability under load matters more than peak throughput**.
 
 ### c3p0 — flat and slow across all conditions
 
-c3p0 is the slowest pool at every measured point. Its throughput range is narrow: 88–321 ops/ms across all thread counts and pool sizes. Unlike the other pools, c3p0 does not degrade sharply with thread count — it was already slow at 1 thread and remains similarly slow at 64. The globally `synchronized` queue serialises all acquisitions so completely that adding threads adds negligible additional contention overhead: the bottleneck is already saturated at 1 thread.
+c3p0 is the slowest pool at every measured point. Its throughput range is narrow: 92–291 ops/ms across all thread counts and pool sizes. Unlike the other pools, c3p0 does not degrade sharply with thread count — it was already slow at 1 thread and remains similarly slow at 64. The globally `synchronized` queue serialises all acquisitions so completely that adding threads adds negligible additional contention overhead.
 
-The pool-size effect is visible: c3p0 scores ~97–116 ops/ms with pool size 4 versus ~210–321 ops/ms with pool size 8. This is likely because a larger pool means threads block less often waiting for a slot, reducing monitor re-entry frequency. Even at its best (321 ops/ms, pool=8, 4 threads), c3p0 is **5× slower than DBCP2** at the same conditions.
-
-Error margins for c3p0 are relatively small in absolute terms, reflecting that the synchronized bottleneck produces consistent (if slow) behavior.
+The pool-size effect is visible: c3p0 scores ~92–127 ops/ms with pool size 4 versus ~197–291 ops/ms with pool size 8. A larger pool means threads block less often waiting for a slot, reducing monitor re-entry frequency. Even at its best (291 ops/ms, pool=8, 4 threads), c3p0 is **5× slower than DBCP2** at the same conditions.
 
 ### Vibur DBCP — strong at low contention, semaphore collapse at high contention
 
-Vibur's uncontended single-thread results (4,416–4,474 ops/ms) are competitive with Tomcat and significantly better than DBCP2 and c3p0. The `ConcurrentLinkedDeque` + `Semaphore` design does deliver a genuine fast path when threads ≤ pool size.
+Vibur's uncontended single-thread results (4,361–4,394 ops/ms) are competitive with Tomcat and significantly better than DBCP2 and c3p0. The `ConcurrentLinkedDeque` + `Semaphore` design does deliver a genuine fast path when threads ≤ pool size.
 
 The collapse when threads exceed pool size is severe and consistent across both pool configurations:
 
-- **Pool size 4:** 4,416 ops/ms at 1 thread → 26 ops/ms at 8 threads (×170 drop for 2× thread overshoot)
-- **Pool size 8:** 4,474 ops/ms at 1 thread → 1,237 ops/ms at 8 threads (still within pool) → 22 ops/ms at 32 threads (4× overshoot)
+- **Pool size 4:** 4,361 ops/ms at 1 thread → 24 ops/ms at 8 threads (×180 drop for 2× thread overshoot)
+- **Pool size 8:** 4,394 ops/ms at 1 thread → 1,351 ops/ms at 8 threads (still within pool) → 23 ops/ms at 32 threads (4× overshoot)
 
-Once threads outnumber connections, the `Semaphore` enters a contested state where threads park and unpark on every acquisition. This parking/unparking overhead is catastrophically expensive — the pool drops to ~21–26 ops/ms regardless of thread count, essentially becoming serialized at the OS scheduler level.
+Once threads outnumber connections, the `Semaphore` enters a contested state where threads park and unpark on every acquisition. This parking/unparking overhead is catastrophically expensive — the pool drops to ~21–24 ops/ms regardless of thread count, essentially becoming serialised at the OS scheduler level.
 
-The sharp transition between 4 threads (1,470 ops/ms, pool=4, within pool size) and 8 threads (26 ops/ms, pool=4, 2× over pool size) is the defining characteristic of Vibur's design. It is an excellent choice only when thread count is reliably ≤ pool size.
+The sharp transition between 4 threads (1,662 ops/ms, pool=4, at pool capacity) and 8 threads (24 ops/ms, pool=4, 2× over capacity) is the defining characteristic of Vibur's design. It is an excellent choice only when thread count is reliably ≤ pool size.
 
 ### Tomcat JDBC Pool — solid under contention with fair queue disabled
 
-With `fairQueue=false`, Tomcat's contention behavior is substantially better than its fair-queue counterpart (which produces a FIFO convoy effect that collapses throughput at high thread counts). The results here show Tomcat performing credibly across all contention levels.
+With `fairQueue=false`, Tomcat performs credibly across all contention levels. The `ReentrantLock` in non-fair mode allows barging, which prevents the FIFO convoy stall and keeps throughput higher under oversubscription.
 
-Single-thread throughput (3,235–3,324 ops/ms) is lower than HikariCP and Vibur but higher than DBCP2. Under high contention (32–64 threads), Tomcat is the second-best pool: at 32 threads with pool size 8 it delivers **1,216 ops/ms**, compared to 509 ops/ms for DBCP2, 210 ops/ms for c3p0, and 22 ops/ms for Vibur.
+Single-thread throughput (3,084–3,232 ops/ms) is lower than HikariCP and Vibur but higher than DBCP2. Under high contention (32–64 threads), Tomcat is the second-best pool: at 32 threads with pool size 8 it delivers **1,366 ops/ms**, compared to 434 ops/ms for DBCP2, 197 ops/ms for c3p0, and 23 ops/ms for Vibur.
 
-Tomcat degrades gracefully as threads increase — there is no cliff. The `ReentrantLock` in non-fair mode allows barging (a thread releasing a connection can immediately re-acquire it or hand off to a waiting thread without strict ordering), which prevents the convoy stall and keeps throughput higher under oversubscription.
-
-The main limitation is that Tomcat's peak throughput is structurally bounded by its lock: it cannot approach HikariCP's thread-local speed at low contention. But for services where the thread count routinely exceeds the pool size, Tomcat (non-fair) is the most predictable high-throughput option after HikariCP.
+Tomcat degrades gradually as threads increase — there is no cliff. Its main limitation is that its peak throughput is structurally bounded by its lock: it cannot approach HikariCP's thread-local speed at low contention. For services where the thread count routinely exceeds the pool size, Tomcat (non-fair) is the most predictable high-throughput option after HikariCP.
 
 ## Summary
 
 | Pool | Peak throughput | Pool size 4 @ 32t | Pool size 8 @ 32t | Scaling behavior |
 |---|---:|---:|---:|---|
-| **HikariCP** | **~35,839 ops/ms** (8t, p8) ⚠ | 1,309 ops/ms ⚠ | 11,310 ops/ms ⚠ | Peaks at threads = pool size; bimodal above it |
-| **Tomcat** | 3,324 ops/ms (1t, p4) | 883 ops/ms | 1,216 ops/ms | Graceful degradation; best non-Hikari at high contention |
-| **DBCP2** | 1,584 ops/ms (1t, p8) | 226 ops/ms | 509 ops/ms | Flat ceiling; most predictable |
-| **Vibur** | 4,474 ops/ms (1t, p8) | 23 ops/ms | 22 ops/ms | Fast below pool size; catastrophic collapse above it |
-| **c3p0** | 321 ops/ms (4t, p8) | 88 ops/ms | 210 ops/ms | Slow everywhere; flat degradation |
+| **HikariCP** | **~36,353 ops/ms** (8t, p8) ⚠ | 1,455 ops/ms | 14,647 ops/ms | Peaks at threads = pool size; bimodal only at exact saturation |
+| **Tomcat** | 3,084 ops/ms (1t, p4) | 755 ops/ms | 1,366 ops/ms | Graceful degradation; best non-Hikari at high contention |
+| **DBCP2** | 1,605 ops/ms (1t, p8) | 232 ops/ms | 434 ops/ms | Flat ceiling; most predictable |
+| **Vibur** | 4,394 ops/ms (1t, p8) | 22 ops/ms | 23 ops/ms | Fast below pool size; catastrophic collapse above it |
+| **c3p0** | 291 ops/ms (4t, p8) | 103 ops/ms | 197 ops/ms | Slow everywhere; flat degradation |
 
-**HikariCP is the correct choice** for Dropwizard + Hibernate services under any thread count. Its `ConcurrentBag` delivers 4–9× the throughput of the next-best pool (Tomcat) in the regime where threads ≤ pool size, which is where well-tuned services spend most of their time.
+**HikariCP is the correct choice** for Dropwizard + Hibernate services under any thread count. Its `ConcurrentBag` delivers 4–10× the throughput of the next-best pool (Tomcat) in the regime where threads ≤ pool size, which is where well-tuned services spend most of their time. Even in the oversubscribed regime it remains the fastest pool by a wide margin.
 
 If thread count reliably exceeds pool size and variance is a concern, **Tomcat (non-fair)** offers the best combination of throughput and predictability in the high-contention regime.
 

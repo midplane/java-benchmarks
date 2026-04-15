@@ -68,9 +68,13 @@ import java.util.concurrent.TimeUnit;
  *
  * RUN CONFIGURATION
  * -----------------
- * @Fork(2): each benchmark method runs in two independent JVM processes. Eliminates
- *   JIT state and GC pressure carryover between pool implementations. Results must
- *   agree across forks to be trustworthy.
+ * @Fork(5): each benchmark method runs in five independent JVM processes. With only
+ *   2 forks, HikariCP's ConcurrentBag exhibits a JIT compilation lottery: the JVM
+ *   sometimes compiles the thread-local fast path hot and sometimes the SynchronousQueue
+ *   handoff path, producing two completely different stable modes across forks (e.g.
+ *   ~20k ops/ms vs ~51k ops/ms for p8_hikari_8threads). 5 forks gives a proper
+ *   distribution of how often each mode is reached, making the variance interpretable
+ *   rather than just noisy.
  *
  * @Warmup(iterations=5, time=2): longer warmup lets HikariCP's ConcurrentBag
  *   thread-local lists stabilize and ensures all pool lock fast paths are JIT-compiled
@@ -88,7 +92,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 5, time = 2)
 @Measurement(iterations = 5, time = 2)
-@Fork(2)
+@Fork(5)
 public class ConnectionPoolBenchmark {
 
     private static final String JDBC_URL = "jdbc:h2:mem:benchmark;DB_CLOSE_DELAY=-1";
